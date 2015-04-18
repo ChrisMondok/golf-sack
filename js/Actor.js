@@ -18,7 +18,7 @@ define([], function() {
 	Actor.prototype.tick = function(tickEvent) { };
 
 	Actor.prototype.tickPreProcess = function(tickEvent) {
-		var dt = this.lastTick ? tickEvent.timestamp - this.lastTick : 0;
+		var dt = (this.lastTick ? tickEvent.timestamp - this.lastTick : 0) / 1000;
 
 		tickEvent.dt = dt;
 
