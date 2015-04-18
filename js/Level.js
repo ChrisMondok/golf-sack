@@ -1,15 +1,13 @@
-define(['js/customRender.js'], function() {
+define([], function() {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
 
 	function Level(container) {
-		// Variable aliases
-
-		this.init(container);
-
 		this.bg = [];
 		this.fg = [];
+
+		this.init(container);
 	}
 
 	Level.prototype.init = function(container) {
