@@ -1,5 +1,6 @@
 define(['js/Actor.js'], function(Actor) {
-	function AimingCircle(target) {
+	function AimingCircle(level, target) {
+		Actor.apply(this, [level]);
 
 		this.target = target;
 
@@ -10,7 +11,12 @@ define(['js/Actor.js'], function(Actor) {
 		this.entry = null;
 
 		//yuck
-		document.getElementsByTagName("canvas")[0].addEventListener("mousemove", this.mouseMove.bind(this));
+
+		this._mouseMoveListener = this.mouseMove.bind(this);
+
+		this.level.engine.render.canvas.addEventListener("mousemove", this._mouseMoveListener);
+
+		this.level.fg.push(this);
 	}
 
 	AimingCircle.inherits(Actor, function(base) {
@@ -88,6 +94,12 @@ define(['js/Actor.js'], function(Actor) {
 			var forceOffset = Matter.Vector.mult(Matter.Vector.rotate(Matter.Vector.normalise(forceVector), Math.PI/2), spin * this.target.circleRadius) ;
 
 			Matter.Body.applyForce(this.target, Matter.Vector.add(this.target.position, forceOffset), forceVector);
+		};
+
+		AimingCircle.prototype.destroy = function() {
+			base.destroy.apply(this, arguments);
+			this.level.fg.splice(this.level.fg.indexOf(this), 1);
+			this.level.engine.render.canvas.removeEventListener("mousemove", this._mouseMoveListener);
 		};
 	});
 

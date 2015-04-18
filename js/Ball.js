@@ -1,10 +1,11 @@
 define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
-	function Ball(body) {
-		
+	function Ball(level, body) {
+		Actor.apply(this, [level]);	
+
 		this.body = body;
-		this.aimingCircle = new AimingCircle(this.body);
-		
-		Matter.Events.on(Matter.Engine, 'tick', this.tick);
+
+		this._tickBound = this.tick.bind(this);
+		Matter.Events.on(this.level.engine, 'tick', this._tickBound);
 		
 	};
 
@@ -19,26 +20,34 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 		
 		};
 		
-		Ball.prototype.STOPPED_SPEED = 3;
-		
-		Ball.prototype.isStopped = function() {
-			if (this.body.speed < this.STOPPED_SPEED)
-				Matter.Body.applyForce(this.body, this.body.position, Matter.Vector.mult(this.body.velocity, -1 * this.body.mass));
-		}
-		
+		Ball.prototype.STOPPED_SPEED = 0.05;
+
 		Ball.prototype.tick = function() {
-		console.log('hi');
-			
-			if(this.isStopped()){
-				if(this.aimingCircle){
+
+			this.body.frictionAir = this.body.speed > this.STOPPED_SPEED ? 0.01 : 1;
+
+			if(!this.body.speed) {
+				if(!this.aimingCircle)
+					this.createAimingCircle();
+			}
+			else {
+				if(this.aimingCircle) {
 					this.aimingCircle.destroy();
-				}
-			} else {
-				if(!this.aimingCircle){
-					this.aimingCircle = new AimingCircle(this.body);
+					this.aimingCircle = null;
 				}
 			}
-		}
+		};
+
+		Ball.prototype.destroy = function() {
+			base.destroy.apply(this, arguments);
+			if(this.aimingCircle)
+				this.aimingCircle.destroy();
+			Matter.Events.off(this.level.engine, 'tick', this._tickBound);
+		};
+
+		Ball.prototype.createAimingCircle = function() {
+			this.aimingCircle = new AimingCircle(this.level, this.body);
+		};
 	});
 	
 	return Ball;

@@ -14,7 +14,7 @@ require(['js/Level.js', 'js/Ball.js'], function(Level, Ball) {
 
 			var ballBody = Matter.Bodies.circle(400, 300, 5, {density:.005, restitution:0.5});
 
-			var ball = new Ball(ballBody);
+			var ball = new Ball(this, ballBody);
 			Matter.World.add(this.engine.world, [ground, ceil, left, right, ballBody]);
 			this.engine.fg = [];
 			this.engine.fg.push(ball);

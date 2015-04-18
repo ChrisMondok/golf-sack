@@ -6,7 +6,6 @@ require(['lib/matter-0.8.0.min.js'], function() {
 			canvas = render.canvas,
 			context = render.context,
 			options = render.options,
-			Composite = Matter.Composite,
 			allBodies = Composite.allBodies(world),
 			allConstraints = Composite.allConstraints(world),
 			background = options.wireframes ? options.wireframeBackground : options.background,

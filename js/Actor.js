@@ -1,8 +1,13 @@
 define([], function() {
-	function Actor() { }
+	function Actor(level) {
+		this.level = level;
+	}
 
 	Actor.prototype.draw = function(ctx) {
 		//override me please!
+	};
+
+	Actor.prototype.destroy = function() {
 	};
 
 	return Actor;
