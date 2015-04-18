@@ -4,12 +4,11 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 
 		this.body = body;
 
-		this._tickBound = this.tick.bind(this);
-		Matter.Events.on(this.level.engine, 'tick', this._tickBound);
-		
 	};
 
 	Ball.inherits(Actor, function(base) {
+
+		Ball.prototype.dragCoefficient = 0.1;
 
 		Ball.prototype.draw = function(ctx) {
 			
@@ -22,9 +21,11 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 		
 		Ball.prototype.STOPPED_SPEED = 0.05;
 
-		Ball.prototype.tick = function() {
+		Ball.prototype.tick = function(tickEvent) {
 
-			this.body.frictionAir = this.body.speed > this.STOPPED_SPEED ? 0.01 : 1;
+			this.body.frictionAir = this.body.speed > this.STOPPED_SPEED ? 0 : 1;
+
+			this.applyDrag(tickEvent);
 
 			if(!this.body.speed) {
 				if(!this.aimingCircle)
@@ -38,11 +39,14 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 			}
 		};
 
+		Ball.prototype.applyDrag = function(tickEvent) {
+			
+		};
+
 		Ball.prototype.destroy = function() {
 			base.destroy.apply(this, arguments);
 			if(this.aimingCircle)
 				this.aimingCircle.destroy();
-			Matter.Events.off(this.level.engine, 'tick', this._tickBound);
 		};
 
 		Ball.prototype.createAimingCircle = function() {

@@ -4,8 +4,6 @@ define(['js/Actor.js'], function(Actor) {
 
 		this.target = target;
 
-		this.inside = false;
-
 		this.lastMousePosition = null;
 
 		this.entry = null;
@@ -31,7 +29,7 @@ define(['js/Actor.js'], function(Actor) {
 			ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
 			ctx.arc(this.target.position.x, this.target.position.y, this.radius, 0, 2*Math.PI);
 
-			if(this.inside)
+			if(this.entry)
 				ctx.fill();
 
 			ctx.stroke();
@@ -40,10 +38,10 @@ define(['js/Actor.js'], function(Actor) {
 		AimingCircle.prototype.mouseMove = function(ev) {
 			var mousePosition = {x: ev.layerX, y: ev.layerY};
 
-			var wasInside = this.inside;
-			this.inside = Matter.Vector.magnitudeSquared(Matter.Vector.sub(this.target.position, mousePosition)) < (Math.pow(this.radius, 2));
+			var wasInside = !!this.entry;
+			var inside = Matter.Vector.magnitudeSquared(Matter.Vector.sub(this.target.position, mousePosition)) < (Math.pow(this.radius, 2));
 
-			if(this.inside != wasInside)
+			if(inside != wasInside)
 				this.handleCrossing(this.lastMousePosition, mousePosition);
 
 			this.lastMousePosition = mousePosition;
