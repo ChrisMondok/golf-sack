@@ -23,8 +23,10 @@ AimingCircle.inherits(Actor, function(base) {
 		this.ctx.strokeStyle = "lime";
 		this.ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
 		this.ctx.arc(this.target.position.x, this.target.position.y, this.radius, 0, 2*Math.PI);
+
 		if(this.inside)
 			this.ctx.fill();
+
 		this.ctx.stroke();
 
 		if(this.entry)
@@ -52,6 +54,18 @@ AimingCircle.inherits(Actor, function(base) {
 		this.lastMousePosition = mousePosition;
 	};
 
+	AimingCircle.prototype.swing = function(entry, exit) {
+		var swingAngle = Matter.Vector.angle(entry, exit);
+		var theta = swingAngle - Matter.Vector.angle(entry, this.target.position);
+
+		console.log(theta);
+
+		var spin = Math.sin(theta);
+
+		console.log("swing in direction %s (%s)", swingAngle, swingAngle / Math.PI * 180);
+		console.log("spin %s", spin);
+	};
+
 	AimingCircle.prototype.handleCrossing = function(before, after) {
 		var self = this;
 
@@ -65,7 +79,13 @@ AimingCircle.inherits(Actor, function(base) {
 
 		var crossing = untransform({x: xTransformed, y: afterTransformed.y});
 
-		this.entry = crossing;
+		if(this.entry) {
+			var entry = this.entry;
+			this.entry = null;
+			this.swing(entry, crossing);
+		}
+		else
+			this.entry = crossing;
 
 		function transform(vector) {
 			return Matter.Vector.rotate(Matter.Vector.sub(vector, self.target.position), - angle);
