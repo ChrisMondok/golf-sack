@@ -1,7 +1,6 @@
-function AimingCircle(target, ctx) {
+function AimingCircle(target) {
 
 	this.target = target;
-	this.ctx = ctx;
 
 	this.inside = false;
 
@@ -11,8 +10,6 @@ function AimingCircle(target, ctx) {
 
 	//yuck
 	document.getElementsByTagName("canvas")[0].addEventListener("mousemove", this.mouseMove.bind(this));
-
-	this.draw();
 }
 
 AimingCircle.inherits(Actor, function(base) {
@@ -22,24 +19,22 @@ AimingCircle.inherits(Actor, function(base) {
 	AimingCircle.prototype.draw = function(ctx) {
 		base.draw.apply(this, arguments);
 		
-		console.log("drawing ac");
-
-		this.ctx.beginPath();
-		this.ctx.strokeStyle = "lime";
-		this.ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-		this.ctx.arc(this.target.position.x, this.target.position.y, this.radius, 0, 2*Math.PI);
+		ctx.beginPath();
+		ctx.strokeStyle = "lime";
+		ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
+		ctx.arc(this.target.position.x, this.target.position.y, this.radius, 0, 2*Math.PI);
 
 		if(this.inside)
-			this.ctx.fill();
+			ctx.fill();
 
-		this.ctx.stroke();
+		ctx.stroke();
 
 		if(this.entry)
 		{
-			this.ctx.beginPath();
-			this.ctx.strokeStyle = "red";
-			this.ctx.arc(this.entry.x, this.entry.y, 2, 0, 2*Math.PI);
-			this.ctx.stroke();
+			ctx.beginPath();
+			ctx.strokeStyle = "red";
+			ctx.arc(this.entry.x, this.entry.y, 2, 0, 2*Math.PI);
+			ctx.stroke();
 		}
 
 	};

@@ -13,7 +13,7 @@ SwingDemoLevel.inherits(Level, function(base) {
 
 		var ball = Bodies.circle(400, 300, 5, {density:.005, restitution:0.5});
 
-		var ac = new AimingCircle(ball, this.ctx);
+		var ac = new AimingCircle(ball);
 
 		World.add(this.engine.world, [ground, ceil, left, right, ball]);
 		this.engine.fg = [];
