@@ -6,12 +6,15 @@ define([], function() {
 
 		this._tickBound = this.tickPreProcess.bind(this);
 
+		this.destroyed = false;
+
 		Matter.Events.on(this.level.engine, 'tick', this._tickBound);
 	}
 
 	Actor.prototype.draw = function(ctx) { };
 
 	Actor.prototype.destroy = function() {
+		this.destroyed = true;
 		Matter.Events.off(this.level.engine, 'tick', this._tickBound);
 	};
 
