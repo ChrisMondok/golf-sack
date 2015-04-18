@@ -11,34 +11,27 @@ function AimingCircle(target, ctx) {
 
 	document.getElementsByTagName("canvas")[0].addEventListener("mousemove", this.mouseMove.bind(this));
 
-	//	this.drawInteriorPoints = function() {
-	//		for(var i=0; i<this.interiorPoints.length; i++) {
-	//			var pt = this.interiorPoints[i];
-	//			var ctx = this.ctx;
-	//			ctx.beginPath();
-	//			ctx.strokeStyle = "green";
-	//			ctx.arc(pt.x, pt.y, 2, 0, 2*Math.PI);
-	//			ctx.stroke();
-	//			console.log();
-	//		}
-	//
-	//		window.requestAnimationFrame(this.drawInteriorPoints);
-	//
-	//	}.bind(this);
-
-	//this.drawInteriorPoints();
+	this.draw();
 }
 
 AimingCircle.inherits(Actor, function(base) {
 	AimingCircle.prototype.draw = function(ctx) {
 		base.draw.apply(this, arguments);
 
-		if(target.speed < SPEED_DEAD_ZONE) {
-			ctx.beginPath();
-			ctx.strokeStyle = "white";
-			ctx.arc(target.position.x, target.position.y, TARGET_RADIUS, 0, 2*Math.PI);
-			ctx.stroke();
+		this.ctx.beginPath();
+		this.ctx.strokeStyle = "lime";
+		this.ctx.arc(this.target.position.x, this.target.position.y, this.radius, 0, 2*Math.PI);
+		this.ctx.stroke();
+
+		if(this.entry)
+		{
+			this.ctx.beginPath();
+			this.ctx.strokeStyle = "red";
+			this.ctx.arc(this.entry.x, this.entry.y, 2, 0, 2*Math.PI);
+			this.ctx.stroke();
 		}
+
+		window.requestAnimationFrame(this.draw.bind(this));
 	};
 
 	AimingCircle.prototype.radius = 45;
@@ -62,9 +55,9 @@ AimingCircle.inherits(Actor, function(base) {
 		var afterTransformed = transform(after);
 		var xTransformed = Math.sqrt(this.radius.squared() - afterTransformed.y.squared());
 
-
 		var crossing = untransform({x: xTransformed, y: afterTransformed.y});
-		console.log(crossing);
+
+		this.entry = crossing;
 
 		function transform(vector) {
 			console.log("transform %o", vector);
