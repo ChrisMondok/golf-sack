@@ -1,4 +1,4 @@
-(function() {
+require(['lib/matter-0.8.0.min.js'], function() {
 	Matter.Render.world = function(engine) {
 		var Render = this;
 		var render = engine.render,
@@ -135,5 +135,4 @@
 		render.canvas.style.backgroundSize = "contain";
 		render.currentBackground = background;
 	};
-})();
-		
+});

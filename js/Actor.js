@@ -1,5 +1,9 @@
-function Actor() { }
+define([], function() {
+	function Actor() { }
 
-Actor.prototype.draw = function(ctx) {
-	//override me please!
-};
+	Actor.prototype.draw = function(ctx) {
+		//override me please!
+	};
+
+	return Actor;
+});
