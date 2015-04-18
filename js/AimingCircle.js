@@ -86,14 +86,17 @@ define(['js/Actor.js'], function(Actor) {
 
 		AimingCircle.prototype.swing = function(entry, exit) {
 			var swingAngle = Matter.Vector.angle(entry, exit);
-			var spin = -Math.sin(swingAngle - Matter.Vector.angle(entry, this.target.position));
+			var spin = Math.sin(swingAngle - Matter.Vector.angle(entry, this.target.position));
 
 			var crossing = Matter.Vector.sub(exit, entry);
 
 			var speed = Matter.Vector.magnitude(crossing) / (exit.time - entry.time);
 
 			var forceVector = Matter.Vector.mult(Matter.Vector.normalise(crossing), this.forceMult * speed);
-			Matter.Body.applyForce(this.target, this.target.position, forceVector);
+
+			var forceOffset = Matter.Vector.mult(Matter.Vector.rotate(Matter.Vector.normalise(forceVector), Math.PI/2), spin * this.target.circleRadius) ;
+
+			Matter.Body.applyForce(this.target, Matter.Vector.add(this.target.position, forceOffset), forceVector);
 		};
 	});
 
