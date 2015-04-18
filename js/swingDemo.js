@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/AimingCircle.js'], function(Level, AimingCircle) {
+require(['js/Level.js', 'js/Ball.js'], function(Level, Ball) {
 	function SwingDemoLevel() {
 		Level.apply(this, arguments); //this sucks.
 	};
@@ -12,13 +12,12 @@ require(['js/Level.js', 'js/AimingCircle.js'], function(Level, AimingCircle) {
 			var left = Bodies.rectangle(0, 300, 60, 600, { isStatic: true });
 			var right = Bodies.rectangle(800, 300, 60, 600, { isStatic: true });
 
-			var ball = Bodies.circle(400, 300, 5, {density:.005, restitution:0.5});
+			var ballBody = Bodies.circle(400, 300, 5, {density:.005, restitution:0.5});
 
-			var ac = new AimingCircle(ball);
-
-			World.add(this.engine.world, [ground, ceil, left, right, ball]);
+			var ball = new Ball(ballBody);
+			World.add(this.engine.world, [ground, ceil, left, right, ballBody]);
 			this.engine.fg = [];
-			this.engine.fg.push(ac);
+			this.engine.fg.push(ball);
 		}
 	});
 
