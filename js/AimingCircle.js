@@ -16,6 +16,9 @@ function AimingCircle(target, ctx) {
 }
 
 AimingCircle.inherits(Actor, function(base) {
+	AimingCircle.prototype.radius = 45;
+	AimingCircle.prototype.forceMult = 0.005;
+
 	AimingCircle.prototype.draw = function(ctx) {
 		base.draw.apply(this, arguments);
 		
@@ -41,8 +44,6 @@ AimingCircle.inherits(Actor, function(base) {
 
 	};
 
-	AimingCircle.prototype.radius = 45;
-
 	AimingCircle.prototype.mouseMove = function(ev) {
 		var mousePosition = {x: ev.layerX, y: ev.layerY};
 
@@ -53,18 +54,6 @@ AimingCircle.inherits(Actor, function(base) {
 			this.handleCrossing(this.lastMousePosition, mousePosition);
 
 		this.lastMousePosition = mousePosition;
-	};
-
-	AimingCircle.prototype.swing = function(entry, exit) {
-		var swingAngle = Matter.Vector.angle(entry, exit);
-		var theta = swingAngle - Matter.Vector.angle(entry, this.target.position);
-
-		console.log(theta);
-
-		var spin = Math.sin(theta);
-
-		console.log("swing in direction %s (%s)", swingAngle, swingAngle / Math.PI * 180);
-		console.log("spin %s", spin);
 	};
 
 	AimingCircle.prototype.handleCrossing = function(before, after) {
@@ -79,6 +68,8 @@ AimingCircle.inherits(Actor, function(base) {
 			xTransformed *= -1;
 
 		var crossing = untransform({x: xTransformed, y: afterTransformed.y});
+
+		crossing.time = new Date().getTime();
 
 		if(this.entry) {
 			var entry = this.entry;
@@ -95,5 +86,17 @@ AimingCircle.inherits(Actor, function(base) {
 		function untransform(vector) {
 			return Matter.Vector.add(Matter.Vector.rotate(vector, angle), self.target.position);
 		}
+	};
+
+	AimingCircle.prototype.swing = function(entry, exit) {
+		var swingAngle = Matter.Vector.angle(entry, exit);
+		var spin = -Math.sin(swingAngle - Matter.Vector.angle(entry, this.target.position));
+
+		var crossing = Matter.Vector.sub(exit, entry);
+
+		var speed = Matter.Vector.magnitude(crossing) / (exit.time - entry.time);
+
+		var forceVector = Matter.Vector.mult(Matter.Vector.normalise(crossing), this.forceMult * speed);
+		Matter.Body.applyForce(this.target, this.target.position, forceVector);
 	};
 });
