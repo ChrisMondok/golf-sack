@@ -12,7 +12,7 @@ define(['js/Actor.js'], function(Actor) {
 		
 		this.radius = 10;
 		
-		this.target = {x:0, y:0};
+		this.target;
 		this.speed = 1;
 		
 		level.fg.push(this);
@@ -59,11 +59,11 @@ define(['js/Actor.js'], function(Actor) {
 		}
 		
 		Enemy.prototype.findTarget = function() {
-			this.target = this.level.engine.world.bodies.filter(function(el){return el.label === "Circle Body"})[0].position;
+			this.target = this.target || this.level.engine.world.bodies.filter(function(el){return el.label === "Circle Body"})[0];
 		}
 		
 		Enemy.prototype.approachTarget = function(dt) {
-			var toTarget = Matter.Vector.sub(this.target, this.position);
+			var toTarget = Matter.Vector.sub(this.target.position, this.position);
 			this.direction = Matter.Vector.angle({x:0, y:0}, toTarget);
 			this.position = Matter.Vector.add(this.position, Matter.Vector.mult(Matter.Vector.normalise(toTarget), this.speed));
 		}
