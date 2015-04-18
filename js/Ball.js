@@ -4,6 +4,8 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 		this.body = body;
 		this.aimingCircle = new AimingCircle(this.body);
 		
+		Matter.Events.on(Matter.Engine, 'tick', this.tick);
+		
 	};
 
 	Ball.inherits(Actor, function(base) {
@@ -25,6 +27,7 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 		}
 		
 		Ball.prototype.tick = function() {
+		console.log('hi');
 			
 			if(this.isStopped()){
 				if(this.aimingCircle){
