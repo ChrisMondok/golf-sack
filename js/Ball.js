@@ -1,10 +1,8 @@
-define(['js/Actor.js'], function(Actor) {
+define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 	function Ball(body) {
-		if (!body instanceof Matter.Body)
-			throw {message: "Argument must be of type Matter.Body"};
 		
 		this.body = body;
-		this.aimingCircle = null;
+		this.aimingCircle = new AimingCircle(this.body);
 		
 	};
 
@@ -15,7 +13,7 @@ define(['js/Actor.js'], function(Actor) {
 			// The ball itself is already drawn as a body. To add a sprite, do it here?
 			
 			if(this.aimingCircle)
-				this.aimingCircle.draw();
+				this.aimingCircle.draw(ctx);
 		
 		};
 		
@@ -40,5 +38,5 @@ define(['js/Actor.js'], function(Actor) {
 		}
 	});
 	
-	return Body;
-}
+	return Ball;
+});
