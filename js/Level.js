@@ -1,4 +1,4 @@
-define([], function() {
+define(['js/customRender.js'], function() {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
