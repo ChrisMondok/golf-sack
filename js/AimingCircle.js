@@ -29,15 +29,6 @@ define(['js/Actor.js'], function(Actor) {
 				ctx.fill();
 
 			ctx.stroke();
-
-			if(this.entry)
-			{
-				ctx.beginPath();
-				ctx.strokeStyle = "red";
-				ctx.arc(this.entry.x, this.entry.y, 2, 0, 2*Math.PI);
-				ctx.stroke();
-			}
-
 		};
 
 		AimingCircle.prototype.mouseMove = function(ev) {
