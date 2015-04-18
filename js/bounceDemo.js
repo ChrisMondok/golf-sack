@@ -21,6 +21,18 @@ World.add(engine.world, [ground, ceil, left, right, ball]);
 Engine.run(engine);
 engine.world.gravity = {x:0, y:0.00001};
 
+engine.fg = [];
+engine.fg.push({
+	
+	draw: function(ctx) {
+		ctx.font = "48px Helvetica";
+		ctx.fillStyle = "white";
+		ctx.fillText("BACKGR'ND", ball.position.x, ball.position.y);
+	}
+});
+
+engine.bg = [];
+
 window.setInterval(function() {
 	var forceMag = 0.04 * ball.mass;
 	Matter.Body.applyForce(ball, ball.position,

@@ -17,6 +17,8 @@ function AimingCircle(target, ctx) {
 AimingCircle.inherits(Actor, function(base) {
 	AimingCircle.prototype.draw = function(ctx) {
 		base.draw.apply(this, arguments);
+		
+		console.log("drawing ac");
 
 		this.ctx.beginPath();
 		this.ctx.strokeStyle = "lime";
@@ -31,7 +33,6 @@ AimingCircle.inherits(Actor, function(base) {
 			this.ctx.stroke();
 		}
 
-		window.requestAnimationFrame(this.draw.bind(this));
 	};
 
 	AimingCircle.prototype.radius = 45;
