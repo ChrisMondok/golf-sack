@@ -1,4 +1,4 @@
-define([], function() {
+define(['js/rendererer.js'], function(rendererer) {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
@@ -16,14 +16,13 @@ define([], function() {
 			render: {
 				options: {
 					showAngleIndicator: true
-				}
+				},
+				controller: rendererer
 			}
 		});
 
 		Engine.run(this.engine);
 
-		Matter.Events.on(this.engine, 'beforeRender', this.drawBackground.bind(this));
-		Matter.Events.on(this.engine, 'afterRender', this.drawForeground.bind(this));
 	};
 
 	Level.prototype.addToWorld = function(bodies) {
