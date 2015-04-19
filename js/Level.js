@@ -7,6 +7,9 @@ define(['js/rendererer.js'], function(rendererer) {
 		this.fg = [];
 		this.actors = [];
 
+		if(window.AudioContext)
+			this.audioContext = new AudioContext();
+
 		this.init(container);
 	}
 

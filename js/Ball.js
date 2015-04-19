@@ -1,23 +1,24 @@
-define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/geometry.js'], function(Actor, AimingCircle, Enemy, Floor, geometry) {
+define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/geometry.js', 'js/noiseSourceFactory.js'],
+	function(Actor, AimingCircle, Enemy, Floor, geometry, noiseSourceFactory) {
 	function Ball(level, position) {
 		Actor.apply(this, [level]);	
 
 		this.body = Matter.Bodies.circle(position.x, position.y, 5, {density:0.005, restitution:0.5});
+		level.addToWorld(this.body);
 
 		this.setMulliganPosition();
 
-		level.addToWorld(this.body);
+		level.fg.push(this);
 
-		this.level.fg.push(this);
+		this.hasSound = !!level.audioContext;
+
+		if(this.hasSound)
+			this.setUpSound(level.audioContext);
 
 		this.history = [];
-
-		window.BALL = this;
-	};
+	}
 
 	Ball.inherits(Actor, function(base) {
-
-		Ball.prototype.dragCoefficient = 0.001;
 
 		Ball.prototype.lethalSpeed = 5;
 
@@ -61,6 +62,9 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 				this.mulligan();
 
 			this.updateHistory();
+
+			if(this.hasSound)
+				this.tickSound();
 		};
 
 		Ball.prototype.adjustFriction = function() {
@@ -132,12 +136,39 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 			this.history.unshift({x: this.body.position.x, y: this.body.position.y, speed: this.body.speed});
 		};
 
+		Ball.prototype.tickSound = function() {
+			console.log(this.body.frictionAir);
+		};
+
+		Ball.prototype.setUpSound = function(audioContext) {
+			this.noise = noiseSourceFactory(audioContext, 2);
+			this.noise.loop = true;
+			this.noise.start(0);
+
+			this.frictionFilter = audioContext.createBiquadFilter();
+			this.frictionFilter.type = 0;
+			this.frictionFilter.frequency.value = 0;
+
+			this.noise.connect(this.frictionFilter);
+			this.frictionFilter.connect(audioContext.destination);
+
+			window.FF = this.frictionFilter;
+		};
+
 		Ball.prototype.destroy = function() {
 			base.destroy.apply(this, arguments);
 			if(this.aimingCircle)
 				this.aimingCircle.destroy();
 
 			this.level.removeFromWorld(this.body);
+
+			if(this.hasSound) {
+				this.tearDownSound();
+			}
+		};
+
+		Ball.prototype.tearDownSound = function() {
+			this.noise.disconnect();
 		};
 
 		Ball.prototype.createAimingCircle = function() {
