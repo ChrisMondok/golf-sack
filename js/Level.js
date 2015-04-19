@@ -40,5 +40,9 @@ define(['js/rendererer.js'], function(rendererer) {
 		});
 	};
 
+	Level.prototype.pointIsOutOfBounds = function(point) {
+		return !Matter.Bounds.contains(this.engine.world.bounds, point);
+	};
+
 	return Level;
 });

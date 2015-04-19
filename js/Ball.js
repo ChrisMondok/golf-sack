@@ -4,11 +4,15 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 
 		this.body = Matter.Bodies.circle(position.x, position.y, 5, {density:0.005, restitution:0.5});
 
+		this.setMulliganPosition();
+
 		level.addToWorld(this.body);
 
 		this.level.fg.push(this);
 
 		this.history = [];
+
+		window.BALL = this;
 	};
 
 	Ball.inherits(Actor, function(base) {
@@ -46,7 +50,6 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 
 			this.adjustFriction();
 
-
 			this.applyMagnusForce();
 
 			this.updateAimingCircle();
@@ -54,9 +57,10 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 			if(this.body.speed > this.lethalSpeed)
 				this.killEnemies();
 
-			while(this.history.length > this.maxHistoryLength)
-				this.history.pop();
-			this.history.unshift({x: this.body.position.x, y: this.body.position.y, speed: this.body.speed});
+			if(this.level.pointIsOutOfBounds(this.body.position))
+				this.mulligan();
+
+			this.updateHistory();
 		};
 
 		Ball.prototype.adjustFriction = function() {
@@ -94,6 +98,21 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 			}
 		};
 
+		Ball.prototype.mulligan = function() {
+			var level = this.level;
+			var mp = this.mulliganPosition;
+
+			setTimeout(function() {
+				new Ball(level, mp);
+			}, 1000);
+
+			this.destroy();
+		};
+
+		Ball.prototype.setMulliganPosition = function() {
+			this.mulliganPosition = Matter.Common.extend({}, this.body.position);
+		};
+
 		Ball.prototype.killEnemies = function() {
 			var enemies = this.level.getActorsOfType(require('js/Enemy.js'));
 			enemies.forEach(function(enemy) {
@@ -107,6 +126,12 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 			}, this);
 		};
 
+		Ball.prototype.updateHistory = function() {
+			while(this.history.length > this.maxHistoryLength)
+				this.history.pop();
+			this.history.unshift({x: this.body.position.x, y: this.body.position.y, speed: this.body.speed});
+		};
+
 		Ball.prototype.destroy = function() {
 			base.destroy.apply(this, arguments);
 			if(this.aimingCircle)
@@ -116,7 +141,7 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 		};
 
 		Ball.prototype.createAimingCircle = function() {
-			this.aimingCircle = new AimingCircle(this.level, this.body);
+			this.aimingCircle = new AimingCircle(this.level, this);
 		};
 	});
 	

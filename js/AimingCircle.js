@@ -26,7 +26,7 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 			ctx.beginPath();
 			ctx.strokeStyle = this.active ? "lime" : "red";
 			ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
-			ctx.arc(this.target.position.x, this.target.position.y, this.radius, 0, 2*Math.PI);
+			ctx.arc(this.target.body.position.x, this.target.body.position.y, this.radius, 0, 2*Math.PI);
 
 			if(this.entry)
 				ctx.fill();
@@ -43,7 +43,7 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 			if(this.lastMousePosition) {
 
 				var wasInside = !!this.entry;
-				var inside = geometry.pointInCircle(this.target.position, mousePosition, this.radius);
+				var inside = geometry.pointInCircle(this.target.body.position, mousePosition, this.radius);
 
 				if(inside != wasInside)
 					this.handleCrossing(this.lastMousePosition, mousePosition);
@@ -53,7 +53,7 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 		};
 
 		AimingCircle.prototype.handleCrossing = function(before, after) {
-			var crossing = geometry.lineSegmentCircleIntersection(before, after, this.target.position, this.radius);
+			var crossing = geometry.lineSegmentCircleIntersection(before, after, this.target.body.position, this.radius);
 			crossing.time = new Date().getTime();
 
 			if(this.entry) {
@@ -77,7 +77,7 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 
 		AimingCircle.prototype.canBeSwungAt = function() {
 			var distanceToNearestPlayer = this.level.getActorsOfType(Player).map(function(player) {
-					return Matter.Vector.magnitude(Matter.Vector.sub(this.target.position, player.body.position));
+					return Matter.Vector.magnitude(Matter.Vector.sub(this.target.body.position, player.body.position));
 				}, this).min();
 
 			return typeof(distanceToNearestPlayer) == 'number' && distanceToNearestPlayer < this.radius;
@@ -88,7 +88,7 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 				return;
 
 			var swingAngle = Matter.Vector.angle(entry, exit);
-			var spin = Math.sin(swingAngle - Matter.Vector.angle(entry, this.target.position));
+			var spin = Math.sin(swingAngle - Matter.Vector.angle(entry, this.target.body.position));
 
 			var crossing = Matter.Vector.sub(exit, entry);
 
@@ -96,14 +96,15 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 
 			var forceVector = Matter.Vector.mult(Matter.Vector.normalise(crossing), this.forceMult * speed);
 
-			var forceOffset = Matter.Vector.mult(Matter.Vector.rotate(Matter.Vector.normalise(forceVector), Math.PI/2), spin * this.target.circleRadius) ;
+			var forceOffset = Matter.Vector.mult(Matter.Vector.rotate(Matter.Vector.normalise(forceVector), Math.PI/2), spin * this.target.body.circleRadius) ;
 
-			var forcePosition = Matter.Vector.add(this.target.position, forceOffset);
+			var forcePosition = Matter.Vector.add(this.target.body.position, forceOffset);
 
 			if(isNaN(forcePosition.x * forcePosition.y * forceVector.x * forceVector.y))
 				throw new Error("NaN?!?!?!?!?!?!?!");
 
-			Matter.Body.applyForce(this.target, forcePosition, forceVector);
+			this.target.setMulliganPosition();
+			Matter.Body.applyForce(this.target.body, forcePosition, forceVector);
 		};
 
 		AimingCircle.prototype.destroy = function() {
