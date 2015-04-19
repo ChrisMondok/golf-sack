@@ -1,5 +1,5 @@
-define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/geometry.js', 'js/noiseSourceFactory.js'],
-	function(Actor, AimingCircle, Enemy, Floor, geometry, noiseSourceFactory) {
+define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/Water.js', 'js/geometry.js', 'js/noiseSourceFactory.js'],
+	function(Actor, AimingCircle, Enemy, Floor, Water, geometry, noiseSourceFactory) {
 	function Ball(level, position) {
 		Actor.apply(this, [level]);	
 
@@ -65,6 +65,12 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 
 			if(this.hasSound)
 				this.tickSound();
+
+			if(this.level.getActorsOfType(Water).some(function(water) {
+				return Matter.Vertices.contains(water.vertices, this.body.position);
+			}, this))
+				this.mulligan();
+
 		};
 
 		Ball.prototype.adjustFriction = function() {

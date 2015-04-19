@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Floor.js', 'js/Player.js', 'js/Sand.js'], function(Level, Ball, Floor, Player, Sand) {
+require(['js/Level.js', 'js/Ball.js', 'js/Floor.js', 'js/Player.js', 'js/Sand.js', 'js/Water.js'], function(Level, Ball, Floor, Player, Sand, Water) {
 	function FloorDemoLevel() {
 		Level.apply(this, arguments); //this sucks.
 	};
@@ -15,13 +15,13 @@ require(['js/Level.js', 'js/Ball.js', 'js/Floor.js', 'js/Player.js', 'js/Sand.js
 			var ball = new Ball(this, {x: 400, y: 300});
 			Matter.World.add(this.engine.world, [ground, ceil, left, right]);
 			
-			var floor = new Floor(this, floorVerts, "green");
-			var lava = new Floor(this, lavaPoolVerts, "red");
+			var floor = new Floor(this, floorVerts);
+			var water = new Water(this, waterVerts);
 
-			var sand = new Sand(this, sandVerts, "#C2B280");
+			var sand = new Sand(this, sandVerts);
 
 			this.player = new Player(this, {x: 600, y: 400});
-		}
+		};
 	});
 
 	var level = new FloorDemoLevel(document.getElementById("gameArea"));
