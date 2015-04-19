@@ -1,6 +1,6 @@
 define(['js/Actor.js'], function(Actor) {
 	
-	function Floor(level, vertices, color) {
+	function Floor(level, vertices) {
 		Actor.apply(this, [level]);
 		
 		this.level = level;
@@ -11,6 +11,8 @@ define(['js/Actor.js'], function(Actor) {
 	Floor.inherits(Actor, function(base) {
 
 		Floor.prototype.color = "green";
+
+		Floor.prototype.friction = 0.01;
 		
 		Floor.prototype.drawBackground = function(ctx) {
 			ctx.fillStyle = this.color;
