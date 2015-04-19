@@ -22,6 +22,18 @@ define(['js/rendererer.js'], function(rendererer) {
 			}
 		});
 
+
+		//yuck
+		this.canvasClientRect = this.engine.render.canvas.getBoundingClientRect();
+
+		this._handlePointerBound = this.handlePointerEvent.bind(this);
+		this._handleTouchBound = this.handleTouchEvent.bind(this);
+
+		document.addEventListener('mousemove', this._handlePointerBound);
+		document.addEventListener('touchmove', this._handleTouchBound);
+		document.addEventListener('touchstart', this._handleTouchBound);
+		document.addEventListener('touchend', this._handleTouchBound);
+
 		Engine.run(this.engine);
 
 	};
@@ -40,8 +52,40 @@ define(['js/rendererer.js'], function(rendererer) {
 		});
 	};
 
+	Level.prototype.handlePointerEvent = function(e) {
+		var position = this.transformWindowSpaceToGameSpace({x: e.pageX, y: e.pageY}, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
+
+		if(e.type == 'mousemove')
+			this.dispatchMouseMove(position);
+
+		if(Matter.Bounds.contains(this.engine.world.bounds, position))
+			e.preventDefault();
+	};
+
+	Level.prototype.handleTouchEvent = function(e) {
+		var touch = e.touches[0];
+		if(!touch)
+			return;
+
+		var position = Matter.Vector.sub({x: touch.pageX, y: touch.pageY}, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
+
+		if(e.type == 'touchmove')
+			this.dispatchMouseMove(position);
+	};
+
+	Level.prototype.dispatchMouseMove = function(mousePosition) {
+		this.actors.forEach(function(actor) {
+			if(actor.onMouseMove)
+				actor.onMouseMove(mousePosition);
+		});
+	};
+
 	Level.prototype.pointIsOutOfBounds = function(point) {
 		return !Matter.Bounds.contains(this.engine.world.bounds, point);
+	};
+
+	Level.prototype.transformWindowSpaceToGameSpace = function(point) {
+		return Matter.Vector.sub(point, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
 	};
 
 	return Level;

@@ -8,10 +8,6 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 
 		this.entry = null;
 
-		this._mouseMoveListener = this.mouseMove.bind(this);
-
-		//yuck
-		this.level.engine.render.canvas.addEventListener("mousemove", this._mouseMoveListener);
 
 		this.level.fg.push(this);
 	}
@@ -34,11 +30,9 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 			ctx.stroke();
 		};
 
-		AimingCircle.prototype.mouseMove = function(ev) {
+		AimingCircle.prototype.onMouseMove = function(mousePosition) {
 			if(!this.active)
 				return;
-
-			var mousePosition = {x: ev.layerX, y: ev.layerY};
 
 			if(this.lastMousePosition) {
 
