@@ -41,6 +41,10 @@ define([], function() {
 					drawVertices(ctx,body.vertices);
 			}
 			
+			if(engine.actors)
+				for(var a=0; a<engine.actors.length; a++)
+					engine.actors[a].draw(ctx);
+			
 			
 		},
 		
