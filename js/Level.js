@@ -50,5 +50,9 @@ define([], function() {
 		});
 	};
 
+	Level.prototype.getBodies = function() {
+		return this.engine.world.bodies;
+	};
+
 	return Level;
 });

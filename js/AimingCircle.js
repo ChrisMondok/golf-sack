@@ -25,7 +25,7 @@ define(['js/Actor.js'], function(Actor) {
 			base.draw.apply(this, arguments);
 
 			ctx.beginPath();
-			ctx.strokeStyle = "lime";
+			ctx.strokeStyle = this.active ? "lime" : "red";
 			ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
 			ctx.arc(this.target.position.x, this.target.position.y, this.radius, 0, 2*Math.PI);
 
@@ -36,6 +36,9 @@ define(['js/Actor.js'], function(Actor) {
 		};
 
 		AimingCircle.prototype.mouseMove = function(ev) {
+			if(!this.active)
+				return;
+
 			var mousePosition = {x: ev.layerX, y: ev.layerY};
 
 			if(this.lastMousePosition) {
@@ -80,6 +83,25 @@ define(['js/Actor.js'], function(Actor) {
 			function untransform(vector) {
 				return Matter.Vector.add(Matter.Vector.rotate(vector, angle), self.target.position);
 			}
+		};
+
+		AimingCircle.prototype.tick = function(tickEvent) {
+			base.tick.apply(this, arguments);
+			this.active = this.canBeSwungAt();
+
+			if(!this.active) {
+				this.entry = null;
+				this.lastMousePosition = null;
+			}
+		};
+
+		AimingCircle.prototype.canBeSwungAt = function() {
+			var distanceToNearestPlayer = this.level.getBodies()
+				.filter({label: "Player"}).map(function(playerBody) {
+					return Matter.Vector.magnitude(Matter.Vector.sub(this.target.position, playerBody.position));
+				}, this).min();
+
+			return typeof(distanceToNearestPlayer) == 'number' && distanceToNearestPlayer < this.radius;
 		};
 
 		AimingCircle.prototype.swing = function(entry, exit) {
