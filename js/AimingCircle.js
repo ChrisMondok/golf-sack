@@ -8,10 +8,9 @@ define(['js/Actor.js'], function(Actor) {
 
 		this.entry = null;
 
-		//yuck
-
 		this._mouseMoveListener = this.mouseMove.bind(this);
 
+		//yuck
 		this.level.engine.render.canvas.addEventListener("mousemove", this._mouseMoveListener);
 
 		this.level.fg.push(this);
@@ -105,6 +104,9 @@ define(['js/Actor.js'], function(Actor) {
 		};
 
 		AimingCircle.prototype.swing = function(entry, exit) {
+			if(entry.time == exit.time)
+				return;
+
 			var swingAngle = Matter.Vector.angle(entry, exit);
 			var spin = Math.sin(swingAngle - Matter.Vector.angle(entry, this.target.position));
 
