@@ -1,4 +1,4 @@
-define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/geometry.js'], function(Actor, AimingCircle, Enemy, geometry) {
+define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/geometry.js'], function(Actor, AimingCircle, Enemy, Floor, geometry) {
 	function Ball(level, position) {
 		Actor.apply(this, [level]);	
 
@@ -44,9 +44,10 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/geometry.js'], f
 
 		Ball.prototype.tick = function(tickEvent) {
 
-			this.body.frictionAir = this.body.speed > this.SLOW_DOWN_UNDER_THIS_SPEED ? 0.01 : 0.5;
+			this.adjustFriction();
 
-			this.applyMagnusForce(tickEvent);
+
+			this.applyMagnusForce();
 
 			this.updateAimingCircle();
 
@@ -58,7 +59,17 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/geometry.js'], f
 			this.history.unshift({x: this.body.position.x, y: this.body.position.y, speed: this.body.speed});
 		};
 
-		Ball.prototype.applyMagnusForce = function(tickEvent) {
+		Ball.prototype.adjustFriction = function() {
+			var baseFriction = this.body.speed > this.SLOW_DOWN_UNDER_THIS_SPEED ? 0 : 0.5;
+
+			var groundFriction = this.level.getActorsOfType(Floor).filter(function(floor) {
+				return Matter.Vertices.contains(floor.vertices, this.body.position);
+			}, this).map('friction').max() || 0;
+
+			this.body.frictionAir = Math.max(baseFriction, groundFriction);
+		};
+
+		Ball.prototype.applyMagnusForce = function() {
 			var airDensity = 0.0000002;
 
 			var vortexStrength = 2 * Math.PI * this.body.angularSpeed * this.body.circleRadius.squared();
