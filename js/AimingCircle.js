@@ -1,4 +1,4 @@
-define(['js/Actor.js', 'js/Player.js'], function(Actor, Player) {
+define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player, geometry) {
 	function AimingCircle(level, target) {
 		Actor.apply(this, [level]);
 
@@ -43,7 +43,7 @@ define(['js/Actor.js', 'js/Player.js'], function(Actor, Player) {
 			if(this.lastMousePosition) {
 
 				var wasInside = !!this.entry;
-				var inside = Matter.Vector.magnitudeSquared(Matter.Vector.sub(this.target.position, mousePosition)) < (Math.pow(this.radius, 2));
+				var inside = geometry.pointInCircle(this.target.position, mousePosition, this.radius);
 
 				if(inside != wasInside)
 					this.handleCrossing(this.lastMousePosition, mousePosition);
@@ -53,18 +53,7 @@ define(['js/Actor.js', 'js/Player.js'], function(Actor, Player) {
 		};
 
 		AimingCircle.prototype.handleCrossing = function(before, after) {
-			var self = this;
-
-			var angle = Matter.Vector.angle(before, after);
-
-			var afterTransformed = transform(after);
-
-			var xTransformed = Math.sqrt(this.radius.squared() - afterTransformed.y.squared());
-			if(afterTransformed.x < 0)
-				xTransformed *= -1;
-
-			var crossing = untransform({x: xTransformed, y: afterTransformed.y});
-
+			var crossing = geometry.lineSegmentCircleIntersection(before, after, this.target.position, this.radius);
 			crossing.time = new Date().getTime();
 
 			if(this.entry) {
@@ -74,14 +63,6 @@ define(['js/Actor.js', 'js/Player.js'], function(Actor, Player) {
 			}
 			else
 				this.entry = crossing;
-
-			function transform(vector) {
-				return Matter.Vector.rotate(Matter.Vector.sub(vector, self.target.position), - angle);
-			}
-
-			function untransform(vector) {
-				return Matter.Vector.add(Matter.Vector.rotate(vector, angle), self.target.position);
-			}
 		};
 
 		AimingCircle.prototype.tick = function(tickEvent) {
