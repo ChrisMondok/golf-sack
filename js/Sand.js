@@ -1,4 +1,4 @@
-define(['js/Floor.js', 'js/geometry.js'], function(Floor, geometry) {
+define(['js/Floor.js'], function(Floor) {
 	function Sand() {
 		Floor.apply(this, arguments);
 	}
