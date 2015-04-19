@@ -1,17 +1,12 @@
 define([], function() {
 	function Actor(level) {
-		console.log("AKTURR");
 		this.level = level;
-
-		var self = this;
 
 		this._tickBound = this.tickPreProcess.bind(this);
 
 		this.destroyed = false;
 
-		if(!this.level.engine.actors)
-			this.level.engine.actors = [];
-		this.level.engine.actors.push(this);
+		this.level.actors.push(this);
 		Matter.Events.on(this.level.engine, 'tick', this._tickBound);
 	}
 
@@ -19,7 +14,7 @@ define([], function() {
 
 	Actor.prototype.destroy = function() {
 		this.destroyed = true;
-		this.level.engine.actors.splice(this.level.engine.actors.indexOf(this),1);
+		this.level.actors.splice(this.level.actors.indexOf(this),1);
 		Matter.Events.off(this.level.engine, 'tick', this._tickBound);
 	};
 

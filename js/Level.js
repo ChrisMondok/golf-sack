@@ -6,6 +6,7 @@ define(['js/rendererer.js'], function(rendererer) {
 	function Level(container) {
 		this.bg = [];
 		this.fg = [];
+		this.actors = [];
 
 		this.init(container);
 	}
@@ -14,10 +15,8 @@ define(['js/rendererer.js'], function(rendererer) {
 		this.engine = Matter.Engine.create(container, {
 			world: { gravity: {x: 0, y: 0} },
 			render: {
-				options: {
-					showAngleIndicator: true
-				},
-				controller: rendererer
+				controller: rendererer,
+				level: this
 			}
 		});
 

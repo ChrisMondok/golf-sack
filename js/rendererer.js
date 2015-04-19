@@ -2,23 +2,24 @@ define([], function() {
 	
 	var Rendererer = {
 		
-		create: function(container) {
+		create: function(options) {
 			
-			var render = { 
-				controller: Rendererer,
-				canvas: null,
-				element: null	
-			}
-			
+			var defaults = {};
+
+			var render = Matter.Common.extend(defaults, options);
+
+			render.controller = Rendererer;
 			render.canvas = createCanvas(800,600);
 			render.context = render.canvas.getContext("2d");
 			
-			container.element.appendChild(render.canvas);
+			options.element.appendChild(render.canvas);
 			
 			return render;
 		},
 		
 		world: function(engine) {
+			var render = engine.render;
+
 			var world = engine.world;
 			var ctx = engine.render.context;
 			var bodies = world.bodies;
@@ -31,21 +32,11 @@ define([], function() {
 			
 			ctx.fillStyle = "black";
 			
-			for(var b=0; b<bodies.length; b++){
-				var body = bodies[b];
-				if(body.label === "Rectangle Body")
-					drawRectangle(ctx,body);
-				else if(body.label === "Circle Body")
-					drawCircle(ctx,body);
-				else
-					drawVertices(ctx,body.vertices);
-			}
+			for(var b=0; b<bodies.length; b++)
+				drawBody(ctx, bodies[b]);
 			
-			if(engine.actors)
-				for(var a=0; a<engine.actors.length; a++)
-					engine.actors[a].draw(ctx);
-			
-			
+			for(var a=0; a<render.level.actors.length; a++)
+				render.level.actors[a].draw(ctx);
 		},
 		
 		clear: function() {
@@ -60,6 +51,15 @@ define([], function() {
         canvas.oncontextmenu = function() { return false; };
         canvas.onselectstart = function() { return false; };
         return canvas;
+	}
+
+	function drawBody(ctx, body) {
+		if(body.label === "Rectangle Body")
+			drawRectangle(ctx,body);
+		else if(body.label === "Circle Body")
+			drawCircle(ctx,body);
+		else
+			drawVertices(ctx,body.vertices);
 	}
 	
 	function drawRectangle(ctx, body) {
