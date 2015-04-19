@@ -56,7 +56,7 @@ define([], function() {
         canvas.oncontextmenu = function() { return false; };
         canvas.onselectstart = function() { return false; };
         return canvas;
-	};
+	}
 	
 	function drawRectangle(ctx, body) {
 		drawVertices(ctx, body.vertices);
@@ -67,6 +67,7 @@ define([], function() {
 	}
 	
 	function drawVertices(ctx, verts) {
+		ctx.beginPath();
 		ctx.moveTo(verts[0].x, verts[0].y);
 		for(var v=0; v<verts.length; v++){
 			ctx.lineTo(verts[v].x, verts[v].y);
