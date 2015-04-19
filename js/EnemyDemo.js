@@ -4,6 +4,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js', 'js/Navigat
 	}
 
 	EnemyDemoLevel.inherits(Level, function(base) {
+		EnemyDemoLevel.prototype.bgm = "audio/synthpunk-garbage-2.ogg";
+
 		EnemyDemoLevel.prototype.init = function() {
 			base.init.apply(this, arguments);
 
