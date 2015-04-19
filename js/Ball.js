@@ -137,7 +137,11 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 		};
 
 		Ball.prototype.tickSound = function() {
-			console.log(this.body.frictionAir);
+			var frequency = (9600 + Math.log10(this.body.frictionAir) * 3200).clamp(0, 9600);
+			this.frictionFilter.frequency.value = frequency;
+
+			var gain = (this.body.frictionAir * (Math.pow(this.body.speed, 1.25) / 40)).clamp(0, 1);
+			this.speedGain.gain.value = gain;
 		};
 
 		Ball.prototype.setUpSound = function(audioContext) {
@@ -149,10 +153,12 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 			this.frictionFilter.type = 0;
 			this.frictionFilter.frequency.value = 0;
 
-			this.noise.connect(this.frictionFilter);
-			this.frictionFilter.connect(audioContext.destination);
+			this.speedGain = audioContext.createGain();
+			this.speedGain.gain.value = 0;
 
-			window.FF = this.frictionFilter;
+			this.noise.connect(this.frictionFilter);
+			this.frictionFilter.connect(this.speedGain);
+			this.speedGain.connect(audioContext.destination);
 		};
 
 		Ball.prototype.destroy = function() {
@@ -168,7 +174,10 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/g
 		};
 
 		Ball.prototype.tearDownSound = function() {
+			this.noise.stop();
 			this.noise.disconnect();
+			this.frictionFilter.disconnect();
+			this.speedGain.disconnect();
 		};
 
 		Ball.prototype.createAimingCircle = function() {
