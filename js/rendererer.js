@@ -40,7 +40,7 @@ define([], function() {
 		},
 		
 		clear: function() {
-			
+
 		}
 	};
 	
@@ -74,10 +74,7 @@ define([], function() {
 	
 	function drawVertices(ctx, verts) {
 		ctx.beginPath();
-		ctx.moveTo(verts[0].x, verts[0].y);
-		for(var v=1; v<verts.length; v++){
-			ctx.lineTo(verts[v].x, verts[v].y);
-		}
+		ctx.polygon(verts);
 		ctx.fill();
 	}
 	
