@@ -38,11 +38,14 @@ define(['js/Actor.js'], function(Actor) {
 		AimingCircle.prototype.mouseMove = function(ev) {
 			var mousePosition = {x: ev.layerX, y: ev.layerY};
 
-			var wasInside = !!this.entry;
-			var inside = Matter.Vector.magnitudeSquared(Matter.Vector.sub(this.target.position, mousePosition)) < (Math.pow(this.radius, 2));
+			if(this.lastMousePosition) {
 
-			if(inside != wasInside)
-				this.handleCrossing(this.lastMousePosition, mousePosition);
+				var wasInside = !!this.entry;
+				var inside = Matter.Vector.magnitudeSquared(Matter.Vector.sub(this.target.position, mousePosition)) < (Math.pow(this.radius, 2));
+
+				if(inside != wasInside)
+					this.handleCrossing(this.lastMousePosition, mousePosition);
+			}
 
 			this.lastMousePosition = mousePosition;
 		};
