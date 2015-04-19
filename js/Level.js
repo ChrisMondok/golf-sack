@@ -1,4 +1,4 @@
-define(['js/rendererer.js'], function(rendererer) {
+define(['js/rendererer.js', 'js/waveSourceFactory.js'], function(rendererer, waveSourceFactory) {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
@@ -7,11 +7,11 @@ define(['js/rendererer.js'], function(rendererer) {
 		this.fg = [];
 		this.actors = [];
 
-		if(window.AudioContext)
-			this.audioContext = new AudioContext();
 
 		this.init(container);
 	}
+
+	Level.prototype.bgm = null;
 
 	Level.prototype.init = function(container) {
 		this.engine = Matter.Engine.create(container, {
@@ -24,7 +24,6 @@ define(['js/rendererer.js'], function(rendererer) {
 				}
 			}
 		});
-
 
 		//yuck
 		this.canvasClientRect = this.engine.render.canvas.getBoundingClientRect();
@@ -39,6 +38,21 @@ define(['js/rendererer.js'], function(rendererer) {
 
 		Engine.run(this.engine);
 
+		this.initAudio();
+	};
+
+	Level.prototype.initAudio = function() {
+		if(window.AudioContext)
+			this.audioContext = new AudioContext();
+		else
+			return;
+
+		if(this.bgm) {
+			this.musicSource = waveSourceFactory(this.audioContext, this.bgm);
+			this.musicSource.loop = true;
+			this.musicSource.connect(this.audioContext.destination);
+			this.musicSource.start(0);
+		}
 	};
 
 	Level.prototype.addToWorld = function(bodies) {
@@ -96,6 +110,13 @@ define(['js/rendererer.js'], function(rendererer) {
 		document.removeEventListener('touchmove', this._handleTouchBound);
 		document.removeEventListener('touchstart', this._handleTouchBound);
 		document.removeEventListener('touchend', this._handleTouchBound);
+
+		if(this.audioContext) {
+			if(this.musicSource) {
+				this.musicSource.stop();
+				this.musicSource.disconnect();
+			}
+		}
 	};
 
 	return Level;

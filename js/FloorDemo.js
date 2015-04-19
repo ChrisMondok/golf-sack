@@ -1,9 +1,13 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Floor.js', 'js/Player.js', 'js/Sand.js', 'js/Water.js'], function(Level, Ball, Floor, Player, Sand, Water) {
+require(['js/Level.js', 'js/Ball.js', 'js/Floor.js', 'js/Player.js', 'js/Sand.js', 'js/Water.js'],
+function(Level, Ball, Floor, Player, Sand, Water) {
 	function FloorDemoLevel() {
 		Level.apply(this, arguments); //this sucks.
 	};
 
 	FloorDemoLevel.inherits(Level, function(base) {
+
+		FloorDemoLevel.prototype.bgm = "audio/synthpunk-garbage.ogg";
+
 		FloorDemoLevel.prototype.init = function() {
 			base.init.apply(this, arguments);
 
@@ -21,6 +25,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Floor.js', 'js/Player.js', 'js/Sand.js
 			var sand = new Sand(this, sandVerts);
 
 			this.player = new Player(this, {x: 600, y: 400});
+
 		};
 	});
 
