@@ -13,7 +13,6 @@ define(['js/Actor.js'], function(Actor) {
 		Floor.prototype.color = "green";
 		
 		Floor.prototype.drawBackground = function(ctx) {
-			console.log('eh');
 			ctx.fillStyle = this.color;
 			ctx.beginPath();
 			ctx.polygon(this.vertices);
