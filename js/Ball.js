@@ -146,7 +146,7 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			var frequency = (9600 + Math.log10(this.body.frictionAir) * 3200).clamp(0, 9600);
 			this.frictionFilter.frequency.value = frequency;
 
-			var gain = (this.body.frictionAir * (Math.pow(this.body.speed, 1.25) / 40)).clamp(0, 1);
+			var gain = (this.body.frictionAir * (Math.pow(this.body.speed, 1.25) / 30)).clamp(0, 1);
 			this.speedGain.gain.value = gain;
 		};
 
