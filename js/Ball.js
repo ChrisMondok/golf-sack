@@ -1,8 +1,10 @@
 define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
-	function Ball(level, body) {
+	function Ball(level, position) {
 		Actor.apply(this, [level]);	
 
-		this.body = body;
+		this.body = Matter.Bodies.circle(position.x, position.y, 5, {density:0.005, restitution:0.5});
+
+		level.addToWorld(this.body);
 
 		this.level.fg.push(this);
 
@@ -77,6 +79,8 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 			base.destroy.apply(this, arguments);
 			if(this.aimingCircle)
 				this.aimingCircle.destroy();
+
+			this.level.removeFromWorld(this.body);
 		};
 
 		Ball.prototype.createAimingCircle = function() {

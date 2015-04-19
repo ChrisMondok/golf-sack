@@ -12,10 +12,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js'], function(L
 			var left = Matter.Bodies.rectangle(0, 300, 60, 600, { isStatic: true });
 			var right = Matter.Bodies.rectangle(800, 300, 60, 600, { isStatic: true });
 
-			var ballBody = Matter.Bodies.circle(400, 300, 5, {density:0.005, restitution:0.5});
-
-			var ball = new Ball(this, ballBody);
-			Matter.World.add(this.engine.world, [ground, ceil, left, right, ballBody]);
+			var ball = new Ball(this, {x: 400, y: 300});
+			Matter.World.add(this.engine.world, [ground, ceil, left, right]);
 
 			var player = new Player(this, {x: 400, y: 400});
 			
