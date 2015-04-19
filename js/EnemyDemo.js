@@ -1,4 +1,5 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js', 'js/NavigationPoint.js'], function(Level, Ball, Enemy, Player, NavigationPoint) {
+require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js', 'js/Sand.js', 'js/Water.js', 'js/NavigationPoint.js'],
+function(Level, Ball, Enemy, Player, Sand, Water, NavigationPoint) {
 	function EnemyDemoLevel() {
 		Level.apply(this, arguments); //this sucks.
 	}
@@ -9,18 +10,18 @@ require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js', 'js/Navigat
 		EnemyDemoLevel.prototype.init = function() {
 			base.init.apply(this, arguments);
 
+
 			var ground = Matter.Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
 			var ceil = Matter.Bodies.rectangle(400, 0, 810, 60, { isStatic: true });
 			var left = Matter.Bodies.rectangle(0, 300, 60, 600, { isStatic: true });
 			var right = Matter.Bodies.rectangle(800, 300, 60, 600, { isStatic: true });
 
-			var ball = new Ball(this, {x: 400, y: 300});
+			var ball = new Ball(this, {x: 400, y: 490});
 			Matter.World.add(this.engine.world, [ground, ceil, left, right]);
 
-			var player = new Player(this, {x: 400, y: 400});
+			var player = new Player(this, {x: 400, y: 500});
 			
 			var enemy = new Enemy(this, {x:50 ,y:50}, 0);
-
 			
 			[
 				{x: 197, y: 173},
@@ -39,6 +40,23 @@ require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js', 'js/Navigat
 			].forEach(function(p) {
 				new NavigationPoint(this, p);
 			}, this);
+
+			//haha this level sucks
+			new Sand(this, [
+				{x: 0, y: 0},
+				{x: 800, y: 0},
+				{x: 800, y: 600},
+				{x: 0, y: 600}
+			]);
+
+			new Water(this, [
+				{x: 343, y: 229},
+				{x: 453, y: 235},
+				{x: 513, y: 284},
+				{x: 453, y: 337},
+				{x: 360, y: 334},
+				{x: 297, y: 272}
+			]);
 		};
 	});
 
