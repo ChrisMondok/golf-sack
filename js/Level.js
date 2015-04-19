@@ -4,7 +4,6 @@ define(['js/rendererer.js'], function(rendererer) {
 	Bodies = Matter.Bodies;
 
 	function Level(container) {
-		this.bg = [];
 		this.fg = [];
 		this.actors = [];
 
@@ -33,22 +32,6 @@ define(['js/rendererer.js'], function(rendererer) {
 
 	Level.prototype.removeFromWorld = function(body) {
 		Matter.World.remove(this.engine.world, body);
-	};
-
-	Level.prototype.drawBackground = function(beforeRenderEvent) {
-		var context = this.engine.render.context;
-
-		this.bg.forEach(function(bgObject) {
-			bgObject.draw(context);
-		});
-	};
-
-	Level.prototype.drawForeground = function(afterRenderEvent) {
-		var context = this.engine.render.context;
-
-		this.fg.forEach(function(fgObject) {
-			fgObject.draw(context);
-		});
 	};
 
 	Level.prototype.getBodies = function() {
