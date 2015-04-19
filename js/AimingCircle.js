@@ -94,7 +94,12 @@ define(['js/Actor.js'], function(Actor) {
 
 			var forceOffset = Matter.Vector.mult(Matter.Vector.rotate(Matter.Vector.normalise(forceVector), Math.PI/2), spin * this.target.circleRadius) ;
 
-			Matter.Body.applyForce(this.target, Matter.Vector.add(this.target.position, forceOffset), forceVector);
+			var forcePosition = Matter.Vector.add(this.target.position, forceOffset);
+
+			if(isNaN(forcePosition.x * forcePosition.y * forceVector.x * forceVector.y))
+				throw new Error("NaN?!?!?!?!?!?!?!");
+
+			Matter.Body.applyForce(this.target, forcePosition, forceVector);
 		};
 
 		AimingCircle.prototype.destroy = function() {
