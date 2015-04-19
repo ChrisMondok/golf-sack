@@ -88,5 +88,12 @@ define(['js/rendererer.js'], function(rendererer) {
 		return Matter.Vector.sub(point, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
 	};
 
+	Level.prototype.destroy = function() {
+		document.removeEventListener('mousemove', this._handlePointerBound);
+		document.removeEventListener('touchmove', this._handleTouchBound);
+		document.removeEventListener('touchstart', this._handleTouchBound);
+		document.removeEventListener('touchend', this._handleTouchBound);
+	};
+
 	return Level;
 });
