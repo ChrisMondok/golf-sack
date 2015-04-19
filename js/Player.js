@@ -10,7 +10,7 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 
 	Player.inherits(Actor, function(base) {
 
-		Player.prototype.legStrength = 0.005;
+		Player.prototype.legStrength = 0.0025;
 
 		Player.prototype.tick = function(tickEvent) {
 			base.tick.apply(this, arguments);
