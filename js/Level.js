@@ -16,7 +16,10 @@ define(['js/rendererer.js'], function(rendererer) {
 			world: { gravity: {x: 0, y: 0} },
 			render: {
 				controller: rendererer,
-				level: this
+				level: this,
+				options: {
+					debug: true
+				}
 			}
 		});
 
