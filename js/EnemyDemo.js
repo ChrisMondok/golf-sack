@@ -1,7 +1,7 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js'], function(Level, Ball, Enemy) {
+require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js'], function(Level, Ball, Enemy, Player) {
 	function EnemyDemoLevel() {
 		Level.apply(this, arguments); //this sucks.
-	};
+	}
 
 	EnemyDemoLevel.inherits(Level, function(base) {
 		EnemyDemoLevel.prototype.init = function() {
@@ -12,13 +12,15 @@ require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js'], function(Level, Ball, Enem
 			var left = Matter.Bodies.rectangle(0, 300, 60, 600, { isStatic: true });
 			var right = Matter.Bodies.rectangle(800, 300, 60, 600, { isStatic: true });
 
-			var ballBody = Matter.Bodies.circle(400, 300, 5, {density:.005, restitution:0.5});
+			var ballBody = Matter.Bodies.circle(400, 300, 5, {density:0.005, restitution:0.5});
 
 			var ball = new Ball(this, ballBody);
 			Matter.World.add(this.engine.world, [ground, ceil, left, right, ballBody]);
+
+			var player = new Player(this, {x: 400, y: 400});
 			
 			var enemy = new Enemy(this, {x:50 ,y:50}, 0);
-		}
+		};
 	});
 
 	var level = new EnemyDemoLevel(document.getElementById("gameArea"));

@@ -8,6 +8,7 @@ define(['js/Actor.js'], function(Actor) {
 		
 		this.state = Enemy.STATE_DISABLED;
 		this.lifetime = 0;
+		this.hasBeenChasingTheSameThingFor = 0;
 		
 		this.radius = 10;
 		
@@ -26,6 +27,8 @@ define(['js/Actor.js'], function(Actor) {
 	Enemy.inherits(Actor, function(base)  {
 
 		Enemy.prototype.speed = 48;
+		Enemy.prototype.visionDistance = 400;
+		Enemy.prototype.attentionSpan = 3;
 		
 		Enemy.prototype.activate = function() {
 			if (this.state == Enemy.STATE_NEW || this.state == Enemy.STATE_DISABLED)
@@ -39,14 +42,15 @@ define(['js/Actor.js'], function(Actor) {
 
 		Enemy.prototype.hunt = function() {
 			if (this.state == Enemy.STATE_NEW || this.state == Enemy.STATE_CHASING) {
-				this.target = null;
 				this.state = Enemy.STATE_HUNTING;
 			}
 		};
 
 		Enemy.prototype.chase = function() {
-			if(this.state == Enemy.STATE_HUNTING)
+			if(this.state == Enemy.STATE_HUNTING) {
+				this.hasBeenChasingTheSameThingFor = 0;
 				this.state = Enemy.STATE_CHASING;
+			}
 		};
 		
 		Enemy.prototype.kill = function() {
@@ -96,20 +100,60 @@ define(['js/Actor.js'], function(Actor) {
 		}
 
 		function tickHunting(tickEvent) {
-			this.target = this.findTarget();
+			this.acquireTarget();
 			if(this.target)
 				this.chase();
+			//TODO: wandering
 		}
 
 		function tickChasing(tickEvent) {
-			if(!this.target || this.target.destroyed)
-				this.hunt();
-			else
+			this.hasBeenChasingTheSameThingFor += tickEvent.dt;
+
+			if(this.hasBeenChasingTheSameThingFor > this.attentionSpan) {
+				this.hasBeenChasingTheSameThingFor = 0;
+				this.acquireTarget();
+			}
+
+			if(this.stillHasTarget())
 				this.approachTarget(tickEvent);
+
+			else {
+				this.target = null;
+				this.hunt();
+			}
 		}
-		
-		Enemy.prototype.findTarget = function() {
-			return this.target || this.level.engine.world.bodies.filter(function(el){return el.label == "Circle Body";})[0];
+
+		Enemy.prototype.acquireTarget = function() {
+			var interestingThings = [
+				this.level.getBodies().filter({label: "Player"}).sortBy(this.getDistanceTo, this),
+				this.level.getBodies().filter({label: "Circle Body"}).sortBy(this.getDistanceTo, this)
+			].flatten();
+
+			var target = interestingThings.find(function(thing) {
+				return this.getDistanceTo(thing) < this.visionDistance;
+			}, this);
+
+			this.target = target;
+
+			if(!this.stillHasTarget())
+				this.target = null;
+		};
+
+		Enemy.prototype.getDistanceTo = function(body) {
+			return Matter.Vector.magnitude(Matter.Vector.sub(body.position, this.position));
+		};
+
+		Enemy.prototype.stillHasTarget = function() {
+			if(!this.target)
+				return false;
+
+			if(this.target.destroyed)
+				return false;
+
+			if(Matter.Vector.magnitude(Matter.Vector.sub(this.position, this.target.position)) > this.visionDistance)
+				return false;
+
+			return true;
 		};
 		
 		Enemy.prototype.approachTarget = function(tickEvent) {
