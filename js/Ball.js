@@ -9,7 +9,6 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 		this.level.fg.push(this);
 
 		this.history = [];
-
 	};
 
 	Ball.inherits(Actor, function(base) {
@@ -64,11 +63,11 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 		};
 
 		Ball.prototype.applyMagnusForce = function(tickEvent) {
-			var airDensity = 0.00001;
+			var airDensity = 0.0000002;
 
 			var vortexStrength = 2 * Math.PI * this.body.angularSpeed * this.body.circleRadius.squared();
 
-			var forceMagnitude = airDensity * this.body.speed * vortexStrength * tickEvent.dt;
+			var forceMagnitude = airDensity * this.body.speed * vortexStrength;
 
 			var forceDirection = Matter.Vector.rotate(Matter.Vector.normalise(this.body.velocity), this.body.angularVelocity > 0 ? Math.PI/2 : - Math.PI/2);
 

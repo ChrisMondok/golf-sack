@@ -10,7 +10,7 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 
 	Player.inherits(Actor, function(base) {
 
-		Player.prototype.legStrength = 0.25;
+		Player.prototype.legStrength = 0.005;
 
 		Player.prototype.tick = function(tickEvent) {
 			base.tick.apply(this, arguments);
@@ -19,7 +19,7 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 		};
 
 		Player.prototype.doMovement = function(tickEvent) {
-			var walkForce = Matter.Vector.mult(playerInput.getNormalizedMovement(), tickEvent.dt * this.legStrength);
+			var walkForce = Matter.Vector.mult(playerInput.getNormalizedMovement(), this.legStrength);
 
 			if(Matter.Vector.magnitudeSquared(walkForce)) {
 				Matter.Body.applyForce(this.body, this.body.position, walkForce);
