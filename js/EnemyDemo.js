@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js'], function(Level, Ball, Enemy, Player) {
+require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js', 'js/NavigationPoint.js'], function(Level, Ball, Enemy, Player, NavigationPoint) {
 	function EnemyDemoLevel() {
 		Level.apply(this, arguments); //this sucks.
 	}
@@ -18,6 +18,25 @@ require(['js/Level.js', 'js/Ball.js', 'js/Enemy.js', 'js/Player.js'], function(L
 			var player = new Player(this, {x: 400, y: 400});
 			
 			var enemy = new Enemy(this, {x:50 ,y:50}, 0);
+
+			
+			[
+				{x: 197, y: 173},
+				{x: 362, y: 143},
+				{x: 593, y: 180},
+				{x: 699, y: 278},
+				{x: 627, y: 511},
+				{x: 685, y: 420},
+				{x: 451, y: 500},
+				{x: 509, y: 332},
+				{x: 291, y: 478},
+				{x: 239, y: 331},
+				{x: 70, y: 390},
+				{x: 104, y: 513},
+				{x: 295, y: 462}
+			].forEach(function(p) {
+				new NavigationPoint(this, p);
+			}, this);
 		};
 	});
 

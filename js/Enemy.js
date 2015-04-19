@@ -1,4 +1,4 @@
-define(['js/Actor.js', 'js/Player.js', 'js/Ball.js'], function(Actor, Player, Ball) {
+define(['js/Actor.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js'], function(Actor, Player, Ball, NavigationPoint) {
 
 	function Enemy(level, position, direction) {
 		Actor.apply(this, [level]);
@@ -128,15 +128,17 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js'], function(Actor, Player, Ba
 		}
 
 		Enemy.prototype.acquireTarget = function() {
+			console.log("Acquire target");
 			var interestingThings = [
 				this.level.getActorsOfType(Player),
-				this.level.getActorsOfType(require('js/Ball.js'))
+				this.level.getActorsOfType(require('js/Ball.js')),
+				this.level.getActorsOfType(NavigationPoint)
 			].map(function(it) {
-				return it.sortBy(function(actor) {return this.getDistanceTo(actor.body);}, this);
+				return it.randomize();
 			}, this).flatten();
 
 			var target = interestingThings.find(function(thing) {
-				return this.getDistanceTo(thing.body) < this.visionDistance;
+				return this.canApproach(thing);
 			}, this);
 
 			this.target = target;
@@ -145,8 +147,9 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js'], function(Actor, Player, Ba
 				this.target = null;
 		};
 
-		Enemy.prototype.getDistanceTo = function(body) {
-			return Matter.Vector.magnitude(Matter.Vector.sub(body.position, this.position));
+		Enemy.prototype.getDistanceTo = function(actor) {
+			var position = actor.position || actor.body.position;
+			return Matter.Vector.magnitude(Matter.Vector.sub(position, this.position));
 		};
 
 		Enemy.prototype.stillHasTarget = function() {
@@ -156,14 +159,21 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js'], function(Actor, Player, Ba
 			if(this.target.destroyed)
 				return false;
 
-			if(Matter.Vector.magnitude(Matter.Vector.sub(this.position, this.target.body.position)) > this.visionDistance)
+			if(Matter.Vector.magnitude(Matter.Vector.sub(this.position, this.target.position || this.target.body.position)) > this.visionDistance)
 				return false;
 
 			return true;
 		};
+
+		Enemy.prototype.canApproach = function(actor) {
+			if(this.getDistanceTo(actor) > this.visionDistance)
+				return false;
+
+			return true;
+		}
 		
 		Enemy.prototype.approachTarget = function(tickEvent) {
-			var toTarget = Matter.Vector.sub(this.target.body.position, this.position);
+			var toTarget = Matter.Vector.sub(this.target.position || this.target.body.position, this.position);
 			this.direction = Matter.Vector.angle({x:0, y:0}, toTarget);
 			this.position = Matter.Vector.add(this.position, Matter.Vector.mult(Matter.Vector.normalise(toTarget), this.speed * tickEvent.dt));
 		};
