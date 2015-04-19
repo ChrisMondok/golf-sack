@@ -18,6 +18,10 @@ define([], function() {
 		Matter.Events.off(this.level.engine, 'tick', this._tickBound);
 	};
 
+	Actor.prototype.blocksTrace = function(traceStart, traceEnd) {
+		return false;
+	};
+
 	Actor.prototype.tick = function(tickEvent) { };
 
 	Actor.prototype.tickPreProcess = function(tickEvent) {

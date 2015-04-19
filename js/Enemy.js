@@ -1,7 +1,8 @@
-define(['js/Actor.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js'], function(Actor, Player, Ball, NavigationPoint) {
+define(['js/Pawn.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js', 'js/Water.js'],
+function(Pawn, Player, Ball, NavigationPoint, Water) {
 
 	function Enemy(level, position, direction) {
-		Actor.apply(this, [level]);
+		Pawn.apply(this, [level]);
 		
 		this.position = position;
 		this.direction = direction;
@@ -17,19 +18,18 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js'], f
 		level.fg.push(this);
 	}
 
-	
 	Enemy.STATE_NEW = 0;
 	Enemy.STATE_HUNTING = 1;
 	Enemy.STATE_CHASING = 2;
 	Enemy.STATE_DISABLED = 3;
 	Enemy.STATE_DEAD = 4;
 	
-	Enemy.inherits(Actor, function(base)  {
-
+	Enemy.inherits(Pawn, function(base)  {
 		Enemy.prototype.speed = 48;
 		Enemy.prototype.visionDistance = 400;
 		Enemy.prototype.attentionSpan = 3;
-		
+		Enemy.prototype.blockedBy = [Water];
+
 		Enemy.prototype.activate = function() {
 			if (this.state == Enemy.STATE_NEW || this.state == Enemy.STATE_DISABLED)
 				this.state = Enemy.STATE_CHASING;
@@ -58,7 +58,6 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js'], f
 				return;
 
 			this.state = Enemy.STATE_DEAD;
-			console.log("DED");
 		};
 
 		Enemy.prototype.tick = function(tickEvent) {
@@ -128,7 +127,6 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js'], f
 		}
 
 		Enemy.prototype.acquireTarget = function() {
-			console.log("Acquire target");
 			var interestingThings = [
 				this.level.getActorsOfType(Player),
 				this.level.getActorsOfType(require('js/Ball.js')),
@@ -138,18 +136,13 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js'], f
 			}, this).flatten();
 
 			var target = interestingThings.find(function(thing) {
-				return this.canApproach(thing);
+				return this.canSee(thing);
 			}, this);
 
 			this.target = target;
 
 			if(!this.stillHasTarget())
 				this.target = null;
-		};
-
-		Enemy.prototype.getDistanceTo = function(actor) {
-			var position = actor.position || actor.body.position;
-			return Matter.Vector.magnitude(Matter.Vector.sub(position, this.position));
 		};
 
 		Enemy.prototype.stillHasTarget = function() {
@@ -159,19 +152,12 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js'], f
 			if(this.target.destroyed)
 				return false;
 
-			if(Matter.Vector.magnitude(Matter.Vector.sub(this.position, this.target.position || this.target.body.position)) > this.visionDistance)
+			if(!this.canSee(this.target))
 				return false;
 
 			return true;
 		};
 
-		Enemy.prototype.canApproach = function(actor) {
-			if(this.getDistanceTo(actor) > this.visionDistance)
-				return false;
-
-			return true;
-		}
-		
 		Enemy.prototype.approachTarget = function(tickEvent) {
 			var toTarget = Matter.Vector.sub(this.target.position || this.target.body.position, this.position);
 			this.direction = Matter.Vector.angle({x:0, y:0}, toTarget);
