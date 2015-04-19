@@ -63,7 +63,9 @@ define([], function() {
 	}
 	
 	function drawCircle(ctx, body) {
-		drawVertices(ctx, body.vertices);
+		ctx.beginPath();
+		ctx.arc(body.position.x, body.position.y, body.circleRadius, 0, Math.PI * 2);
+		ctx.fill();
 	}
 	
 	function drawVertices(ctx, verts) {
