@@ -1,4 +1,4 @@
-define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
+define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/geometry.js'], function(Actor, AimingCircle, Enemy, geometry) {
 	function Ball(level, position) {
 		Actor.apply(this, [level]);	
 
@@ -21,9 +21,6 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 
 		Ball.prototype.draw = function(ctx) {
 			
-			// The ball itself is already drawn as a body. To add a sprite, do it here?
-			
-
 			ctx.save();
 
 			ctx.globalAlpha = 0.5;
@@ -53,6 +50,9 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 
 			this.updateAimingCircle();
 
+			if(this.body.speed > this.lethalSpeed)
+				this.killEnemies();
+
 			while(this.history.length > this.maxHistoryLength)
 				this.history.pop();
 			this.history.unshift({x: this.body.position.x, y: this.body.position.y, speed: this.body.speed});
@@ -81,6 +81,19 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 					this.aimingCircle = null;
 				}
 			}
+		};
+
+		Ball.prototype.killEnemies = function() {
+			var enemies = this.level.getActorsOfType(require('js/Enemy.js'));
+			enemies.forEach(function(enemy) {
+				var a = this.body.positionPrev;
+				var b = this.body.position;
+				var r = enemy.radius + this.body.circleRadius;
+
+				if(geometry.lineSegmentCircleIntersection(a, b, enemy.position, r))
+					enemy.kill();
+
+			}, this);
 		};
 
 		Ball.prototype.destroy = function() {

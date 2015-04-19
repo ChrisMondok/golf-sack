@@ -54,7 +54,11 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js'], function(Actor, Player, Ba
 		};
 		
 		Enemy.prototype.kill = function() {
+			if(this.state == Enemy.STATE_DEAD)
+				return;
+
 			this.state = Enemy.STATE_DEAD;
+			console.log("DED");
 		};
 
 		Enemy.prototype.tick = function(tickEvent) {
@@ -126,7 +130,7 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js'], function(Actor, Player, Ba
 		Enemy.prototype.acquireTarget = function() {
 			var interestingThings = [
 				this.level.getActorsOfType(Player),
-				this.level.getActorsOfType(Ball)
+				this.level.getActorsOfType(require('js/Ball.js'))
 			].map(function(it) {
 				return it.sortBy(function(actor) {return this.getDistanceTo(actor.body);}, this);
 			}, this).flatten();
@@ -171,9 +175,8 @@ define(['js/Actor.js', 'js/Player.js', 'js/Ball.js'], function(Actor, Player, Ba
 			ctx.arc(this.position.x, this.position.y, this.radius, 0, 2*Math.PI);
 			ctx.fill();
 		};
-		
 	});
 	
 	return Enemy;
-	
+
 });

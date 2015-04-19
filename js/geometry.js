@@ -9,6 +9,9 @@ define([], function() {
 	}
 
 	function lineSegmentCircleIntersection(a, b, center, radius) {
+		if(!pointInCircle(a, center, radius) && !pointInCircle(b, center, radius))
+			return null;
+
 		var angle = Matter.Vector.angle(a, b);
 
 		var bTransformed = transform(b);
