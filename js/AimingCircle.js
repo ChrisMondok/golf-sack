@@ -1,4 +1,4 @@
-define(['js/Actor.js'], function(Actor) {
+define(['js/Actor.js', 'js/Player.js'], function(Actor, Player) {
 	function AimingCircle(level, target) {
 		Actor.apply(this, [level]);
 
@@ -95,9 +95,8 @@ define(['js/Actor.js'], function(Actor) {
 		};
 
 		AimingCircle.prototype.canBeSwungAt = function() {
-			var distanceToNearestPlayer = this.level.getBodies()
-				.filter({label: "Player"}).map(function(playerBody) {
-					return Matter.Vector.magnitude(Matter.Vector.sub(this.target.position, playerBody.position));
+			var distanceToNearestPlayer = this.level.getActorsOfType(Player).map(function(player) {
+					return Matter.Vector.magnitude(Matter.Vector.sub(this.target.position, player.body.position));
 				}, this).min();
 
 			return typeof(distanceToNearestPlayer) == 'number' && distanceToNearestPlayer < this.radius;

@@ -34,8 +34,10 @@ define(['js/rendererer.js'], function(rendererer) {
 		Matter.World.remove(this.engine.world, body);
 	};
 
-	Level.prototype.getBodies = function() {
-		return this.engine.world.bodies;
+	Level.prototype.getActorsOfType = function(type) {
+		return this.actors.filter(function(actor) {
+			return actor instanceof type;
+		});
 	};
 
 	return Level;

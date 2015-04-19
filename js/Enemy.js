@@ -1,4 +1,4 @@
-define(['js/Actor.js'], function(Actor) {
+define(['js/Actor.js', 'js/Player.js', 'js/Ball.js'], function(Actor, Player, Ball) {
 
 	function Enemy(level, position, direction) {
 		Actor.apply(this, [level]);
@@ -125,12 +125,14 @@ define(['js/Actor.js'], function(Actor) {
 
 		Enemy.prototype.acquireTarget = function() {
 			var interestingThings = [
-				this.level.getBodies().filter({label: "Player"}).sortBy(this.getDistanceTo, this),
-				this.level.getBodies().filter({label: "Circle Body"}).sortBy(this.getDistanceTo, this)
-			].flatten();
+				this.level.getActorsOfType(Player),
+				this.level.getActorsOfType(Ball)
+			].map(function(it) {
+				return it.sortBy(function(actor) {return this.getDistanceTo(actor.body);}, this);
+			}, this).flatten();
 
 			var target = interestingThings.find(function(thing) {
-				return this.getDistanceTo(thing) < this.visionDistance;
+				return this.getDistanceTo(thing.body) < this.visionDistance;
 			}, this);
 
 			this.target = target;
@@ -150,14 +152,14 @@ define(['js/Actor.js'], function(Actor) {
 			if(this.target.destroyed)
 				return false;
 
-			if(Matter.Vector.magnitude(Matter.Vector.sub(this.position, this.target.position)) > this.visionDistance)
+			if(Matter.Vector.magnitude(Matter.Vector.sub(this.position, this.target.body.position)) > this.visionDistance)
 				return false;
 
 			return true;
 		};
 		
 		Enemy.prototype.approachTarget = function(tickEvent) {
-			var toTarget = Matter.Vector.sub(this.target.position, this.position);
+			var toTarget = Matter.Vector.sub(this.target.body.position, this.position);
 			this.direction = Matter.Vector.angle({x:0, y:0}, toTarget);
 			this.position = Matter.Vector.add(this.position, Matter.Vector.mult(Matter.Vector.normalise(toTarget), this.speed * tickEvent.dt));
 		};
