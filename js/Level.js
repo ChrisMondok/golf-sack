@@ -31,6 +31,7 @@ define(['js/rendererer.js', 'js/waveSourceFactory.js'], function(rendererer, wav
 		this._handlePointerBound = this.handlePointerEvent.bind(this);
 		this._handleTouchBound = this.handleTouchEvent.bind(this);
 
+		document.addEventListener('click', this._handlePointerBound);
 		document.addEventListener('mousemove', this._handlePointerBound);
 		document.addEventListener('touchmove', this._handleTouchBound);
 		document.addEventListener('touchstart', this._handleTouchBound);
@@ -74,6 +75,9 @@ define(['js/rendererer.js', 'js/waveSourceFactory.js'], function(rendererer, wav
 
 		if(e.type == 'mousemove')
 			this.dispatchMouseMove(position);
+
+		if(e.type == 'click')
+			console.log('{x: %d, y: %d}', position.x, position.y);
 
 		if(Matter.Bounds.contains(this.engine.world.bounds, position))
 			e.preventDefault();
