@@ -30,6 +30,11 @@ define([], function() {
 			ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 			ctx.globalCompositeOperation = 'source-over';
 			
+			
+			for(var a=0; a<render.level.actors.length; a++)
+				if(render.level.actors[a].drawBackground)
+					render.level.actors[a].drawBackground(ctx);
+				
 			ctx.fillStyle = "black";
 			
 			for(var b=0; b<bodies.length; b++)

@@ -1,12 +1,10 @@
 define(['js/Actor.js'], function(Actor) {
 	
-	function Floor(level, vertices) {
+	function Floor(level, vertices, color) {
 		Actor.apply(this, [level]);
 		
 		this.level = level;
 		this.vertices = vertices;
-		
-		level.bg.push(this);
 		
 	}
 
@@ -14,11 +12,12 @@ define(['js/Actor.js'], function(Actor) {
 
 		Floor.prototype.color = "green";
 		
-		Floor.prototype.draw = function(ctx) {
+		Floor.prototype.drawBackground = function(ctx) {
+			console.log('eh');
 			ctx.fillStyle = this.color;
+			ctx.beginPath();
 			ctx.polygon(this.vertices);
 			ctx.fill();
-			
 		};
 	});
 	

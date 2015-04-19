@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Floor.js'], function(Level, Ball, Floor) {
+require(['js/Level.js', 'js/Ball.js', 'js/Floor.js', 'js/Player.js'], function(Level, Ball, Floor,Player) {
 	function FloorDemoLevel() {
 		Level.apply(this, arguments); //this sucks.
 	};
@@ -12,12 +12,12 @@ require(['js/Level.js', 'js/Ball.js', 'js/Floor.js'], function(Level, Ball, Floo
 			var left = Matter.Bodies.rectangle(0, 300, 60, 600, { isStatic: true });
 			var right = Matter.Bodies.rectangle(800, 300, 60, 600, { isStatic: true });
 
-			var ballBody = Matter.Bodies.circle(400, 300, 5, {density:.005, restitution:0.5});
-
-			var ball = new Ball(this, ballBody);
-			Matter.World.add(this.engine.world, [ground, ceil, left, right, ballBody]);
+			var ball = new Ball(this, {x: 400, y: 300});
+			Matter.World.add(this.engine.world, [ground, ceil, left, right]);
 			
-			var floor = new Floor(this, floorVerts);
+			var floor = new Floor(this, floorVerts, "green");
+			var lava = new Floor(this, lavaPoolVerts, "red");
+			this.player = new Player(this, {x: 600, y: 400});
 		}
 	});
 
