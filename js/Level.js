@@ -27,8 +27,11 @@ define([], function() {
 	};
 
 	Level.prototype.addToWorld = function(bodies) {
-		console.log("ADD TO WORLD");
 		Matter.World.add(this.engine.world, bodies);
+	};
+
+	Level.prototype.removeFromWorld = function(body) {
+		Matter.World.remove(this.engine.world, body);
 	};
 
 	Level.prototype.drawBackground = function(beforeRenderEvent) {

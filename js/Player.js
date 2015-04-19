@@ -1,8 +1,11 @@
 define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
-	function Player(level, body) {
+	function Player(level, position) {
 		Actor.apply(this, [level]);
 
-		this.body = body;
+		this.body = Matter.Bodies.circle(position.x, position.y, 15, {frictionAir: 0.25});
+		this.body.label = "Player";
+
+		level.addToWorld(this.body);
 	}
 
 	Player.inherits(Actor, function(base) {
@@ -23,6 +26,12 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 				var walkAngle = Matter.Vector.angle({x: 0, y: 0}, walkForce);
 				Matter.Body.rotate(this.body, -this.body.angle + walkAngle);
 			}
+		};
+
+		Player.prototype.destroy = function() {
+			base.destroy.apply(this, arguments);
+
+			this.level.removeFromWorld(this.body);
 		};
 	});
 

@@ -16,10 +16,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js'], function(Level, Ball, Pla
 
 			var ball = new Ball(this, ballBody);
 
-			var playerBody = Matter.Bodies.circle(600, 400, 15, {frictionAir: 0.25});
-
-			this.addToWorld([ground, ceil, left, right, ballBody, playerBody]);
-			this.player = new Player(this, playerBody);
+			this.addToWorld([ground, ceil, left, right, ballBody]);
+			this.player = new Player(this, {x: 600, y: 400});
 
 			this.engine.fg = [];
 			this.engine.fg.push(ball);
