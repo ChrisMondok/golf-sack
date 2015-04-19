@@ -15,26 +15,29 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 
 		Ball.prototype.dragCoefficient = 0.001;
 
+		Ball.prototype.lethalSpeed = 5;
+
+		Ball.prototype.maxHistoryLength = 50;
+
 		Ball.prototype.draw = function(ctx) {
 			
 			// The ball itself is already drawn as a body. To add a sprite, do it here?
 			
-			ctx.strokeStyle = "cyan";
 
-			if(this.lastDrag) {
+			ctx.save();
+
+			ctx.globalAlpha = 0.5;
+
+			for(var i = 1; i < this.history.length; i++) {
 				ctx.beginPath();
-				ctx.moveTo(this.lastDrag.position.x, this.lastDrag.position.y);
-				var dest = Matter.Vector.add(this.lastDrag.position, Matter.Vector.mult(this.lastDrag.force, 1000000));
-				ctx.lineTo(dest.x, dest.y);
+				ctx.lineWidth = this.body.circleRadius * 1.5 * (1 - (i-1)/this.history.length);
+				ctx.strokeStyle = this.history[i].speed > this.lethalSpeed ? "red" : "blue";
+				ctx.moveTo(this.history[i - 1].x, this.history[i - 1].y);
+				ctx.lineTo(this.history[i].x, this.history[i].y);
 				ctx.stroke();
 			}
 
-			ctx.beginPath();
-			ctx.moveTo(this.body.position.x, this.body.position.y);
-			for(var i = 0; i < this.history.length; i++) {
-				ctx.lineTo(this.history[i].x, this.history[i].y);
-			};
-			ctx.stroke();
+			ctx.restore();
 
 		};
 		
@@ -48,18 +51,11 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 
 			this.applyMagnusForce(tickEvent);
 
-			if(this.body.speed < this.JUST_CONSIDER_THIS_STOPPED_OKAY) {
-				if(!this.aimingCircle)
-					this.createAimingCircle();
-			}
-			else {
-				if(this.aimingCircle) {
-					this.aimingCircle.destroy();
-					this.aimingCircle = null;
-				}
-			}
+			this.updateAimingCircle();
 
-			//this.history.unshift({x: this.body.position.x, y: this.body.position.y});
+			while(this.history.length > this.maxHistoryLength)
+				this.history.pop();
+			this.history.unshift({x: this.body.position.x, y: this.body.position.y, speed: this.body.speed});
 		};
 
 		Ball.prototype.applyMagnusForce = function(tickEvent) {
@@ -72,6 +68,19 @@ define(['js/Actor.js', 'js/AimingCircle.js'], function(Actor, AimingCircle) {
 			var forceDirection = Matter.Vector.rotate(Matter.Vector.normalise(this.body.velocity), this.body.angularVelocity > 0 ? Math.PI/2 : - Math.PI/2);
 
 			Matter.Body.applyForce(this.body, this.body.position, Matter.Vector.mult(forceDirection, forceMagnitude));
+		};
+
+		Ball.prototype.updateAimingCircle = function() {
+			if(this.body.speed < this.JUST_CONSIDER_THIS_STOPPED_OKAY) {
+				if(!this.aimingCircle)
+					this.createAimingCircle();
+			}
+			else {
+				if(this.aimingCircle) {
+					this.aimingCircle.destroy();
+					this.aimingCircle = null;
+				}
+			}
 		};
 
 		Ball.prototype.destroy = function() {
