@@ -29,6 +29,12 @@ define([], function() {
 			ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 			ctx.globalCompositeOperation = 'source-over';
 			
+			
+			if(engine.actors)
+				for(var a=0; a<engine.actors.length; a++)
+					if(engine.actors[a].drawBackground)
+						engine.actors[a].drawBackground(ctx);
+				
 			ctx.fillStyle = "black";
 			
 			for(var b=0; b<bodies.length; b++){

@@ -16,9 +16,6 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js'], function(Level, Ball, Pla
 
 			this.addToWorld([ground, ceil, left, right]);
 			this.player = new Player(this, {x: 600, y: 400});
-
-			this.engine.fg = [];
-			this.engine.fg.push(ball);
 		};
 	});
 
