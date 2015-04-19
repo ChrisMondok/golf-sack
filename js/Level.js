@@ -26,6 +26,11 @@ define([], function() {
 		Matter.Events.on(this.engine, 'afterRender', this.drawForeground.bind(this));
 	};
 
+	Level.prototype.addToWorld = function(bodies) {
+		console.log("ADD TO WORLD");
+		Matter.World.add(this.engine.world, bodies);
+	};
+
 	Level.prototype.drawBackground = function(beforeRenderEvent) {
 		var context = this.engine.render.context;
 

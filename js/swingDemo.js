@@ -1,7 +1,7 @@
-require(['js/Level.js', 'js/Ball.js'], function(Level, Ball) {
+require(['js/Level.js', 'js/Ball.js', 'js/Player.js'], function(Level, Ball, Player) {
 	function SwingDemoLevel() {
 		Level.apply(this, arguments); //this sucks.
-	};
+	}
 
 	SwingDemoLevel.inherits(Level, function(base) {
 		SwingDemoLevel.prototype.init = function() {
@@ -12,13 +12,18 @@ require(['js/Level.js', 'js/Ball.js'], function(Level, Ball) {
 			var left = Matter.Bodies.rectangle(0, 300, 60, 600, { isStatic: true });
 			var right = Matter.Bodies.rectangle(800, 300, 60, 600, { isStatic: true });
 
-			var ballBody = Matter.Bodies.circle(400, 300, 5, {density:.005, restitution:0.5});
+			var ballBody = Matter.Bodies.circle(400, 300, 5, {density:0.005, restitution:0.5});
 
 			var ball = new Ball(this, ballBody);
-			Matter.World.add(this.engine.world, [ground, ceil, left, right, ballBody]);
+
+			var playerBody = Matter.Bodies.circle(600, 400, 15, {frictionAir: 0.25});
+
+			this.addToWorld([ground, ceil, left, right, ballBody, playerBody]);
+			this.player = new Player(this, playerBody);
+
 			this.engine.fg = [];
 			this.engine.fg.push(ball);
-		}
+		};
 	});
 
 	var level = new SwingDemoLevel(document.getElementById("gameArea"));
