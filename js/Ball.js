@@ -161,6 +161,8 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			var level = this.level;
 			var mp = this.mulliganPosition;
 
+			level.score++;
+
 			setTimeout(function() {
 				new Ball(level, mp);
 			}, 1000);
