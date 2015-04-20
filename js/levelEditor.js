@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js'], function(Level, Ball, Player, Floor, Sand, Water) {
+require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/Actor.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, Actor) {
 	function LevelEditor() {
 		Level.apply(this, arguments); //this sucks.
 		
@@ -14,50 +14,12 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		var clickDrawButton = function() {
 			this.state.drawing = !this.state.drawing;
 			if(this.state.drawing)
-				startDrawing.bind(this)();
+				this.startDrawing.bind(this)();
 			else
-				stopDrawing.bind(this)();
-			toggleAllButtonsDisabled();
-		}
+				this.stopDrawing.bind(this)();
+		}		
 		
-		var toggleAllButtonsDisabled = function() {
-			Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){radio.disabled = !radio.disabled});
-		}
-		
-		var getCurrentBrush = function() {
-			return Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){return radio.checked}).value;
-		}
-		
-		var startDrawing = function() {
-			this.state.brush = getCurrentBrush();
-			this.points = [];
-			drawButton.value = "Drawing...";
-		}
-		
-		var stopDrawing = function() {
-			
-			drawButton.value = "Start Drawing";
-			if(this.points.length == 0)
-				return;
-			
-			var b = this.state.brush;
-			if (b == "grass")
-				new Floor(this, this.points);
-			else if(b == "sand")
-				new Sand(this, this.points);
-			else if(b == "water")
-				new Water(this, this.points);
-			else if(b == "lava")
-				console.log("The floor is made of lava! (Lava is not yet implemented)");
-			this.points = [];
-			
-				
-		}
-			
-		
-		var drawButton = document.getElementById("draw")
-		
-		drawButton.addEventListener('click',clickDrawButton.bind(this));
+		document.getElementById("draw").addEventListener('click',clickDrawButton.bind(this));
 		
 	}
 
@@ -78,11 +40,61 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 
 			if(e.type === 'click' && Matter.Bounds.contains(this.engine.world.bounds, position)){
 				console.log(this.state.drawing ? this.state.brush : "nothing");
-				if(this.state.drawing)
-					this.points.push(position);
+				if(this.state.drawing){
+					if(this.state.brush == "player"){
+						new Player(this, position).tick = function(){};
+						this.stopDrawing();
+					} else if(this.state.brush == "ball"){
+						new Ball(this, position).tick = function(){};
+						this.stopDrawing();
+					} else if(this.state.brush == "enemy"){
+						new Enemy(this, position).tick = function(){};
+						this.stopDrawing();
+					} else if(this.state.brush == "hole"){
+						console.log("No holes!");
+						this.stopDrawing();
+					} else if(this.state.brush == "erase"){
+						console.log("Can't erase!");
+						this.stopDrawing();
+					} else {
+						this.points.push(position);
+					}
+				}
 				console.log(this.points);
 			}
 		};
+		
+		LevelEditor.prototype.startDrawing = function() {
+			this.state.brush = getCurrentBrush();
+			this.points = [];
+			Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){radio.disabled = true});
+			document.getElementById("draw").value = "Drawing...";
+		}		
+		
+		var getCurrentBrush = function() {
+			return Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){return radio.checked}).value;
+		}	
+		
+		LevelEditor.prototype.stopDrawing = function() {
+			
+			document.getElementById("draw").value = "Start Drawing";
+			Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){radio.disabled = false});
+			if(this.points.length == 0)
+				return;
+			
+			var b = this.state.brush;
+			if (b == "grass")
+				new Floor(this, this.points);
+			else if(b == "sand")
+				new Sand(this, this.points);
+			else if(b == "water")
+				new Water(this, this.points);
+			else if(b == "lava")
+				console.log("The floor is made of lava! (Lava is not yet implemented)");
+			this.points = [];
+			
+				
+		}
 		
 		LevelEditor.prototype.draw = function(renderer) {
 			base.draw.apply(this, arguments);
