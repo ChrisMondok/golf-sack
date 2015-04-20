@@ -40,17 +40,17 @@ define(['js/Floor.js', 'js/geometry.js'], function(Floor, geometry) {
 
 				ctx.save();
 					ctx.translate(offsetPX, 0);
-					ctx.fillRect(-offsetPX, 0, render.canvas.width + offsetPX, render.canvas.height);
+					ctx.fillRect(-offsetPX, 0, this.level.engine.world.bounds.max.x + offsetPX, this.level.engine.world.bounds.max.y);
 				ctx.restore();
 
 				ctx.save();
 					ctx.translate(0, offsetPX);
-					ctx.fillRect(0, -offsetPX, render.canvas.width, render.canvas.height + offsetPX);
+					ctx.fillRect(0, -offsetPX, this.level.engine.world.bounds.max.x, this.level.engine.world.bounds.max.y + offsetPX);
 				ctx.restore();
 
 			ctx.restore();
 
-		}
+		};
 	});
 
 	return Water;
