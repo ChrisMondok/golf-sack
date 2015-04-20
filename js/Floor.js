@@ -5,12 +5,11 @@ define(['js/Actor.js'], function(Actor) {
 		
 		this.level = level;
 		this.vertices = vertices;
-		
 	}
 
 	Floor.inherits(Actor, function(base) {
 
-		Floor.prototype.color = "green";
+		Floor.prototype.color = "#067319";
 
 		Floor.prototype.friction = 0.01;
 		
