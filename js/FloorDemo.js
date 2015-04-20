@@ -2,7 +2,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Floor.js', 'js/Player.js', 'js/Sand.js
 function(Level, Ball, Floor, Player, Sand, Water) {
 	function FloorDemoLevel() {
 		Level.apply(this, arguments); //this sucks.
-	};
+	}
 
 	FloorDemoLevel.inherits(Level, function(base) {
 
@@ -30,6 +30,4 @@ function(Level, Ball, Floor, Player, Sand, Water) {
 	});
 
 	var level = new FloorDemoLevel(document.getElementById("gameArea"));
-
-	return FloorDemoLevel;
 });
