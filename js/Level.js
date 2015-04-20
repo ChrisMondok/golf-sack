@@ -93,7 +93,8 @@ function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 	};
 
 	Level.prototype.drawBackground = function(render) {};
-	Level.prototype.draw = function(render) {};
+	Level.prototype.draw = function(render) { };
+	Level.prototype.drawHud = function(render) { };
 
 	Level.prototype.addToWorld = function(bodies) {
 		Matter.World.add(this.engine.world, bodies);
@@ -137,8 +138,10 @@ function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 	Level.prototype.handlePointerEvent = function(e) {
 		var position = this.transformWindowSpaceToGameSpace({x: e.pageX, y: e.pageY}, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
 
-		if(e.type == 'mousemove')
+		if(e.type == 'mousemove') {
 			this.dispatchMouseMove(position);
+			this.mm = position;
+		}
 
 		if(e.type == 'click')
 			console.log('{x: %d, y: %d}', position.x, position.y);
@@ -170,7 +173,9 @@ function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 	};
 
 	Level.prototype.transformWindowSpaceToGameSpace = function(point) {
-		return Matter.Vector.sub(point, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
+		var pointInCanvas = Matter.Vector.sub(point, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
+		var upperLeftCorner = Matter.Vector.sub(this.engine.render.center, {x: this.engine.render.canvas.width/2, y: this.engine.render.canvas.height/2});
+		return Matter.Vector.add(pointInCanvas, upperLeftCorner);
 	};
 
 	Level.prototype.destroy = function() {
