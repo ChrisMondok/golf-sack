@@ -37,7 +37,10 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			var left = Matter.Bodies.rectangle(0, 300, 60, 600, { isStatic: true });
 			var right = Matter.Bodies.rectangle(800, 300, 60, 600, { isStatic: true });
 			this.addToWorld([ground, ceil, left, right]);
-			
+		};
+
+		LevelEditor.prototype.initHud = function() {
+			//intentionally do nothing
 		};
 		
 		LevelEditor.prototype.handlePointerEvent = function(e) {
