@@ -179,9 +179,7 @@ define([], function() {
 	}
 	
 	function drawCircle(ctx, body) {
-		ctx.beginPath();
-		ctx.arc(body.position.x, body.position.y, body.circleRadius, 0, Math.PI * 2);
-		ctx.fill();
+
 	}
 	
 	function drawVertices(ctx, verts) {

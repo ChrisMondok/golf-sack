@@ -31,6 +31,13 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 
 			var ctx = render.context;
 			
+			ctx.beginPath();
+			ctx.fillStyle = "white";
+			ctx.strokeStyle = "black";
+			ctx.arc(this.body.position.x, this.body.position.y, this.body.circleRadius, 0, Math.PI * 2);
+			ctx.fill();
+			ctx.stroke();
+			
 			ctx.save();
 
 			ctx.globalAlpha = 0.5;
