@@ -6,11 +6,14 @@ function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint, Wall) 
 
 	LevelMadeWithLevelEditor.inherits(Level, function(base) {
 
+
 		LevelMadeWithLevelEditor.prototype.init = function() {
 			this.width = 3000;
 			this.height = 3000;
 
+
 			base.init.apply(this, arguments);
+
 
 			new Floor(this, [{"x":21,"y":15.1875},{"x":1974,"y":19.1875},{"x":1958,"y":1967.1875},{"x":654,"y":1947.1875},{"x":274,"y":1187.1875}]);
 			new Wall(this, [{"x":21,"y":15.1875},{"x":1974,"y":19.1875},{"x":1958,"y":1967.1875},{"x":50,"y":1963.1875},{"x":21,"y":15.1875}]);
@@ -28,6 +31,12 @@ function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint, Wall) 
 
 			[{"x":920,"y":1177.1875},{"x":1269,"y":1373.1875},{"x":1455,"y":1568.1875},{"x":1020,"y":1522.1875},{"x":840,"y":968.1875},{"x":939,"y":576.1875},{"x":1274,"y":522.1875},{"x":1202,"y":894.1875},{"x":1370,"y":945.1875},{"x":1461,"y":965.1875},{"x":1616,"y":1119.1875},{"x":1047,"y":983.1875},{"x":1694,"y":768.1875},{"x":1774,"y":379.1875},{"x":1534,"y":463.1875},{"x":1022,"y":360.1875},{"x":730,"y":346.1875},{"x":574,"y":717.1875},{"x":237,"y":366.1875},{"x":293,"y":781.1875},{"x":376,"y":1118.1875},{"x":692,"y":903.1875},{"x":210,"y":1096.1875},{"x":133,"y":1509.1875},{"x":624,"y":1781.1875},{"x":711,"y":1929.1875},{"x":1084,"y":1922.1875},{"x":1162,"y":1757.1875},{"x":703,"y":1687.1875},{"x":558,"y":1497.1875},{"x":487,"y":472.1875},{"x":1589,"y":133.1875},{"x":1838,"y":176.1875}].forEach(function(nav){new NavigationPoint(this, nav);},this);
 		};
+
+		LevelMadeWithLevelEditor.prototype.initAudio = function() {
+			this.bgm = "bgm3";
+
+			base.initAudio.apply(this, arguments);
+		}
 	});
 
 	var level = new LevelMadeWithLevelEditor(document.getElementById("gameArea"));
