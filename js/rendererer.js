@@ -10,14 +10,19 @@ define([], function() {
 				playerMargin: 100,
 				center: {x: 400, y: 300},
 				options: {},
-				images: {}
+				images: {},
+				border: {
+					style: "solid",
+					width: "3px",
+					color: "black"
+				}
 			};
 
 			var render = Matter.Common.extend(defaults, config);
 
 			render.frame = 0;
 			render.controller = Rendererer;
-			render.canvas = createCanvas(render.width, render.height);
+			render.canvas = createCanvas(render.width, render.height, render.border);
 			render.context = render.canvas.getContext("2d");
 
 			render.patterns = {};
@@ -109,10 +114,14 @@ define([], function() {
 		}
 	};
 	
-	function createCanvas(width, height){
+	function createCanvas(width, height, border){
 		var canvas = document.createElement("canvas");
 		canvas.width = width;
 		canvas.height = height;
+		console.log(canvas.style);
+		canvas.style.borderStyle = border.style;
+		canvas.style.borderWidth = border.width;
+		canvas.style.borderColor = border.color;
         canvas.oncontextmenu = function() { return false; };
         canvas.onselectstart = function() { return false; };
         return canvas;
