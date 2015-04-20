@@ -256,6 +256,10 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 		Ball.prototype.createAimingCircle = function() {
 			this.aimingCircle = new AimingCircle(this.level, this);
 		};
+		
+		Ball.prototype.sink = function(hole) {
+			this.destroy();
+		}
 	});
 	
 	return Ball;

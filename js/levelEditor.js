@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js', 'js/Wall.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint, Wall) {
+require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js', 'js/Wall.js', 'js/Hole.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint, Wall, Hole) {
 	function LevelEditor(container, width, height) {
 		this.width = width;
 		this.height = height;
@@ -66,7 +66,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 						this.placedObjects.push(new NavigationPoint(this,position));
 						//this.stopDrawing();
 					} else if(this.state.brush == "hole"){
-						console.log("No holes!");
+						this.placedObjects.push(new Hole(this, position));
 						this.stopDrawing();
 					} else if(this.state.brush == "erase"){
 						this.erase(position);
@@ -182,6 +182,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 					output = output + "\nnew Ball(this, {x:" + obj.body.position.x + ",y:" + obj.body.position.y + "});";
 				} else if(obj instanceof NavigationPoint) {
 					navPoints.push(obj.position);
+				} else if(obj instanceof Hole) {
+					output = output + "\nnew Hole(this, {x:" + obj.position.x + ",y:" + obj.position.y + "});";
 				}
 			});
 			if(navPoints.length){
