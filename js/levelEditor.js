@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint) {
+require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js', 'js/Wall.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint, Wall) {
 	function LevelEditor() {
 		Level.apply(this, arguments); //this sucks.
 		
@@ -31,12 +31,6 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 
 		LevelEditor.prototype.init = function() {
 			base.init.apply(this, arguments);
-
-			var ground = Matter.Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
-			var ceil = Matter.Bodies.rectangle(400, 0, 810, 60, { isStatic: true });
-			var left = Matter.Bodies.rectangle(0, 300, 60, 600, { isStatic: true });
-			var right = Matter.Bodies.rectangle(800, 300, 60, 600, { isStatic: true });
-			this.addToWorld([ground, ceil, left, right]);
 		};
 
 		LevelEditor.prototype.initHud = function() {
@@ -136,6 +130,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				this.placedObjects.push(new Water(this, this.points));
 			else if(b == "lava")
 				console.log("The floor is made of lava! (Lava is not yet implemented)");
+			else if(b == "wall")
+				this.placedObjects.push(new Wall(this, this.points));
 			
 			this.points = [];
 			
@@ -154,7 +150,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				ctx.strokeStyle = "black";
 				ctx.arc(p.x, p.y, 2, 0, Math.PI * 2)
 				ctx.stroke();
-				ctx.strokeStyle = this.points[i+1] ? "black" : "blue";
+				ctx.strokeStyle = this.points[i+1] ? "black" : this.state.brush !== 'wall' ? "blue" : "transparent";
 				ctx.beginPath();
 				ctx.moveTo(p.x, p.y);
 				ctx.lineTo(np.x, np.y);
@@ -172,6 +168,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 					output = output + "\nnew Sand(this, " + JSON.stringify(obj.vertices) + ");";
 				} else if(obj instanceof Floor) {
 					output = output + "\nnew Floor(this, " + JSON.stringify(obj.vertices) + ");";
+				} else if(obj instanceof Wall) {
+					output = output + "\nnew Wall(this, " + JSON.stringify(obj.points) + ");";
 				} else if(obj instanceof Enemy) {
 					output = output + "\nnew Enemy(this, {x:" + obj.position.x + ",y:" + obj.position.y + "});";
 				} else if(obj instanceof Player) {
