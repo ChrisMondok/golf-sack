@@ -49,6 +49,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				new Water(this, this.points);
 			else if(b == "lava")
 				console.log("The floor is made of lava! (Lava is not yet implemented)");
+			this.points = [];
 			
 				
 		}
@@ -82,6 +83,24 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				console.log(this.points);
 			}
 		};
+		
+		LevelEditor.prototype.draw = function(renderer) {
+			base.draw.apply(this, arguments);
+			var ctx = renderer.context;
+			for(var i=0; i<this.points.length; i++) {
+				var p = this.points[i];
+				var np = this.points[i+1] || this.points[0];
+				ctx.beginPath();
+				ctx.strokeStyle = "black";
+				ctx.arc(p.x, p.y, 2, 0, Math.PI * 2)
+				ctx.stroke();
+				ctx.strokeStyle = this.points[i+1] ? "black" : "blue";
+				ctx.beginPath();
+				ctx.moveTo(p.x, p.y);
+				ctx.lineTo(np.x, np.y);
+				ctx.stroke();
+			}
+		}
 		
 	});
 
