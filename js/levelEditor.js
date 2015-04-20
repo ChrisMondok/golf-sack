@@ -62,6 +62,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 	}
 
 	LevelEditor.inherits(Level, function(base) {
+		LevelEditor.prototype.snapDistance = 32;
+
 		LevelEditor.prototype.init = function() {
 			base.init.apply(this, arguments);
 
@@ -79,9 +81,20 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			if(e.type === 'click' && Matter.Bounds.contains(this.engine.world.bounds, position)){
 				console.log(this.state.drawing ? this.state.brush : "nothing");
 				if(this.state.drawing)
-					this.points.push(position);
+					this.points.push(this.snapPosition(position));
 				console.log(this.points);
 			}
+		};
+
+		LevelEditor.prototype.snapPosition = function(position) {
+			this.getActorsOfType(Floor).forEach(function(floor) {
+				floor.vertices.forEach(function(v) {
+					var dist = Matter.Vector.magnitude(Matter.Vector.sub(v, position));
+					if(dist < this.snapDistance)
+						position = Matter.Common.clone(v);
+				}, this);
+			}, this);
+			return position;
 		};
 		
 		LevelEditor.prototype.draw = function(renderer) {
