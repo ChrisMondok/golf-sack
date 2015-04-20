@@ -10,7 +10,7 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 		this.state = Enemy.STATE_DISABLED;
 		this.lifetime = 0;
 		this.hasBeenChasingTheSameThingFor = 0;
-		
+
 		this.radius = 10;
 		
 		this.vertices = generateCircleVertices(this.radius, this.position);
@@ -40,10 +40,13 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 		Enemy.prototype.visionDistance = 400;
 		Enemy.prototype.attentionSpan = 3;
 		Enemy.prototype.blockedBy = [Water];
+		Enemy.prototype.points = 5;
+		Enemy.prototype.speechCooldown = 5;
 
 		Enemy.prototype.activate = function() {
 			if (this.state == Enemy.STATE_NEW || this.state == Enemy.STATE_DISABLED)
 				this.state = Enemy.STATE_CHASING;
+			this.speechCooldown = Math.random() * Enemy.prototype.speechCooldown;
 		};
 		
 		Enemy.prototype.disable = function() {
@@ -63,12 +66,21 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 				this.state = Enemy.STATE_CHASING;
 			}
 		};
+
+		Enemy.prototype.speak = function() {
+			if(this.state == Enemy.STATE_HUNTING || this.state == Enemy.STATE_CHASING) {
+				this.level.playSound(["groan1", "groan2", "groan3", "groan4", "groan5"].randomize()[0]);
+				this.speechCooldown = (Math.random() + 0.5)*Enemy.prototype.speechCooldown;
+			}
+		};
 		
 		Enemy.prototype.kill = function() {
 			if(this.state == Enemy.STATE_DEAD)
 				return;
 
 			this.level.playSound("zombieHurt");
+
+			this.level.score -= this.points;
 
 			this.state = Enemy.STATE_DEAD;
 		};
@@ -105,6 +117,10 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			}
 		};
 
+		Enemy.prototype.isDead = function() {
+			return this.state == Enemy.STATE_DEAD;
+		};
+
 		function tickNew() {
 			if(this.lifetime > 3)
 				this.activate();
@@ -119,7 +135,10 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			this.acquireTarget();
 			if(this.target)
 				this.chase();
-			//TODO: wandering
+
+			this.speechCooldown -= tickEvent.dt;
+			if(this.speechCooldown < 0)
+				this.speak();
 		}
 
 		function tickChasing(tickEvent) {
@@ -137,6 +156,10 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 				this.target = null;
 				this.hunt();
 			}
+
+			this.speechCooldown -= tickEvent.dt;
+			if(this.speechCooldown < 0)
+				this.speak();
 		}
 
 		Enemy.prototype.acquireTarget = function() {
