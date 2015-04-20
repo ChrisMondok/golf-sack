@@ -29,8 +29,6 @@ define(['js/Actor.js'], function(Actor) {
 		
 	}
 	
-	
-	
 	Wall.inherits(Actor, function(base){
 		Wall.prototype.width = 24;
 		
@@ -39,7 +37,11 @@ define(['js/Actor.js'], function(Actor) {
 			this.bodies.forEach(function (body) {
 				drawBody(ctx, body);
 			});
-		}
+		};
+
+		Wall.prototype.blocksTrace = function(traceStart, traceEnd) {
+			return Matter.Query.ray(this.bodies, traceStart, traceEnd).length > 0;
+		};
 			
 		function drawBody(ctx, body) {
 			if(body.label === "Rectangle Body")

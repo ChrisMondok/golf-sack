@@ -1,5 +1,5 @@
-define(['js/Pawn.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js', 'js/Water.js'],
-function(Pawn, Player, Ball, NavigationPoint, Water) {
+define(['js/Pawn.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js', 'js/Water.js', 'js/Wall.js'],
+function(Pawn, Player, Ball, NavigationPoint, Water, Wall) {
 
 	function Enemy(level, position, direction) {
 		Pawn.apply(this, [level]);
@@ -39,7 +39,7 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 		Enemy.prototype.speed = 48;
 		Enemy.prototype.visionDistance = 400;
 		Enemy.prototype.attentionSpan = 3;
-		Enemy.prototype.blockedBy = [Water];
+		Enemy.prototype.blockedBy = [Water, Wall];
 		Enemy.prototype.points = 5;
 		Enemy.prototype.speechCooldown = 5;
 
