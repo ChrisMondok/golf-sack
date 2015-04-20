@@ -21,7 +21,8 @@ function(Level, Ball, Enemy, Player, Sand, Water, NavigationPoint) {
 
 			var player = new Player(this, {x: 400, y: 500});
 			
-			var enemy = new Enemy(this, {x:50 ,y:50}, 0);
+			for(var i = 0; i < 4; i++)
+				new Enemy(this, {x:Math.random() * 600 + 100 ,y:Math.random() * 50 + 40}, 0);
 			
 			[
 				{x: 197, y: 173},
