@@ -7,6 +7,7 @@ define(['js/output.js'], function(output) {
 			bgm2: "audio/synthpunk-garbage-2.ogg",
 			bgm3: "audio/synthpunk-garbage-4.ogg",
 			bgm4: "audio/synthpunk-garbage-5.ogg",
+			nobgm: "audio/nobgm.ogg",
 			golfHit1: "audio/golf-hit1.ogg",
 			golfHit2: "audio/golf-hit2.ogg",
 			golfHit3: "audio/golf-hit3.ogg",
