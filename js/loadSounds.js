@@ -25,20 +25,34 @@ define(['js/output.js'], function(output) {
 			if(!window.AudioContext)
 				return Promise.reject();
 
+			var done = false;
+
 			var line = output.log("Loading sound "+key+".");
+			drawDots();
 			var start = new Date().getTime();
 			return getAudioData(soundUrls[key]).then(function(encoded) {
 				var loaded = new Date().getTime();
-				line.innerHTML += ".. Loaded in "+(loaded - start)+"s.";
+				line.innerHTML += " Loaded in "+(loaded - start)+"s.";
 				return new Promise(function(resolve, reject) {
 					audioContext.decodeAudioData(encoded, function(buffer) {
 						var done = new Date().getTime();
-						line.innerHTML += ".. Decoded in "+(done - loaded)+"ms.";
+						line.innerHTML += " Decoded in "+(done - loaded)+"ms.";
 						sounds[key] = buffer;
 						resolve();
 					}, reject);
 				});
+			}).then(function() {
+				done = true;
+			}, function() {
+				done = true;
 			});
+
+			function drawDots() {
+				line.innerHTML += '.';
+
+				if(!done)
+					setTimeout(drawDots, 100);
+			}
 		}
 
 		function getAudioData(url) {
