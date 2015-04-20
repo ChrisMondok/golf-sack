@@ -77,7 +77,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			this.placedObjects.reverse();
 			for(var i=0; i<this.placedObjects.length; i++){
 				var v = this.placedObjects[i].vertices || this.placedObjects[i].body.vertices || [{x:0,y:0}];
-				if(Matter.Vertices.contains(v, position)){
+				if(Matter.Vertices.reallyContains(v, position)){
 					console.log(this.placedObjects[i]);
 					var obj = this.placedObjects[i];
 					if(obj.destroy)
