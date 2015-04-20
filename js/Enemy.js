@@ -139,6 +139,8 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			this.speechCooldown -= tickEvent.dt;
 			if(this.speechCooldown < 0)
 				this.speak();
+
+			this.killPlayers();
 		}
 
 		function tickChasing(tickEvent) {
@@ -160,6 +162,8 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			this.speechCooldown -= tickEvent.dt;
 			if(this.speechCooldown < 0)
 				this.speak();
+
+			this.killPlayers();
 		}
 
 		Enemy.prototype.acquireTarget = function() {
@@ -198,6 +202,14 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			var toTarget = Matter.Vector.sub(this.target.position || this.target.body.position, this.position);
 			this.direction = Matter.Vector.angle({x:0, y:0}, toTarget);
 			this.position = Matter.Vector.add(this.position, Matter.Vector.mult(Matter.Vector.normalise(toTarget), this.speed * tickEvent.dt));
+		};
+
+		Enemy.prototype.killPlayers = function() {
+			this.level.getActorsOfType(Player).filter(function(player) {
+				return this.getDistanceTo(player) < this.radius + player.body.circleRadius;
+			}, this).forEach(function(player) {
+				player.kill();
+			});
 		};
 		
 		Enemy.prototype.draw = function(render) {

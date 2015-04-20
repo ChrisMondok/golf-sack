@@ -33,6 +33,11 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 
 			this.level.removeFromWorld(this.body);
 		};
+
+		Player.prototype.kill = function() {
+			this.level.score += Infinity;
+			this.destroy();
+		};
 	});
 
 	return Player;
