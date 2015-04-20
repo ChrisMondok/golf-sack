@@ -24,7 +24,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 	}
 
 	LevelEditor.inherits(Level, function(base) {
-		LevelEditor.prototype.snapDistance = 32;
+		LevelEditor.prototype.snapDistance = 8;
 
 		LevelEditor.prototype.init = function() {
 			base.init.apply(this, arguments);
