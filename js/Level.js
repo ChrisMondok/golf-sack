@@ -74,6 +74,8 @@ function(Player, rendererer, waveSourceFactory, loadImages) {
 		}
 	};
 
+	Level.prototype.draw = function(render) { };
+
 	Level.prototype.addToWorld = function(bodies) {
 		Matter.World.add(this.engine.world, bodies);
 	};
