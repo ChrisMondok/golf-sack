@@ -20,13 +20,24 @@ function(rendererer, waveSourceFactory, loadImages) {
 
 	Level.prototype.bgm = null;
 
+	Level.prototype.width = 800;
+	Level.prototype.height = 600;
+
 	Level.prototype.init = function(container, images) {
 		this.engine = Matter.Engine.create(container, {
-			world: { gravity: {x: 0, y: 0} },
+			world: { 
+				gravity: {x: 0, y: 0},
+				bounds: {
+					min: {x: 0, y: 0},
+					max: {x: this.width, y: this.height}
+				}
+			},
 			render: {
 				controller: rendererer,
 				level: this,
 				images: images,
+				width: this.width,
+				height: this.height,
 				options: {
 					debug: true
 				}
