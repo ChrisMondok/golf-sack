@@ -16,8 +16,10 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 		AimingCircle.prototype.radius = 45;
 		AimingCircle.prototype.forceMult = 0.005;
 
-		AimingCircle.prototype.draw = function(ctx) {
+		AimingCircle.prototype.draw = function(render) {
 			base.draw.apply(this, arguments);
+
+			var ctx = render.context;
 
 			ctx.beginPath();
 			ctx.strokeStyle = this.active ? "lime" : "red";

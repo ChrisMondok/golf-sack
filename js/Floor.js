@@ -14,7 +14,9 @@ define(['js/Actor.js'], function(Actor) {
 
 		Floor.prototype.friction = 0.01;
 		
-		Floor.prototype.drawBackground = function(ctx) {
+		Floor.prototype.drawBackground = function(render) {
+			var ctx = render.context;
+
 			ctx.fillStyle = this.color;
 			ctx.beginPath();
 			ctx.polygon(this.vertices);

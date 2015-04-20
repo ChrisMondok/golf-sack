@@ -10,6 +10,7 @@ define([], function() {
 
 			var render = Matter.Common.extend(defaults, config);
 
+			render.frame = 0;
 			render.controller = Rendererer;
 			render.canvas = createCanvas(800,600);
 			render.context = render.canvas.getContext("2d");
@@ -28,8 +29,11 @@ define([], function() {
 		world: function(engine) {
 			var render = engine.render;
 
+			render.frame++;
+			render.timestamp = new Date().getTime();
+
 			var world = engine.world;
-			var ctx = engine.render.context;
+			var ctx = render.context;
 			var bodies = world.bodies;
 			
 			ctx.globalCompositeOperation = 'source-in';
@@ -40,7 +44,7 @@ define([], function() {
 			
 			for(var a=0; a<render.level.actors.length; a++)
 				if(render.level.actors[a].drawBackground)
-					render.level.actors[a].drawBackground(ctx);
+					render.level.actors[a].drawBackground(render);
 				
 			ctx.fillStyle = "black";
 			
@@ -48,7 +52,7 @@ define([], function() {
 				drawBody(ctx, bodies[b]);
 			
 			for(var a=0; a<render.level.actors.length; a++)
-				render.level.actors[a].draw(ctx);
+				render.level.actors[a].draw(render);
 
 			if(render.options.debug) {
 				updateDebugGraph(render);

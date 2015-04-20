@@ -10,7 +10,7 @@ define([], function() {
 		Matter.Events.on(this.level.engine, 'tick', this._tickBound);
 	}
 
-	Actor.prototype.draw = function(ctx) { };
+	Actor.prototype.draw = function(render) { };
 
 	Actor.prototype.destroy = function() {
 		this.destroyed = true;

@@ -164,8 +164,11 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			this.position = Matter.Vector.add(this.position, Matter.Vector.mult(Matter.Vector.normalise(toTarget), this.speed * tickEvent.dt));
 		};
 		
-		Enemy.prototype.draw = function(ctx) {
+		Enemy.prototype.draw = function(render) {
 			base.draw.apply(this, arguments);
+			
+			var ctx = render.context;
+
 			ctx.beginPath();
 			ctx.fillStyle = "purple";
 			ctx.arc(this.position.x, this.position.y, this.radius, 0, 2*Math.PI);

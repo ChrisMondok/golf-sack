@@ -6,13 +6,16 @@ define(['js/Actor'], function(Actor) {
 	}
 
 	NavigationPoint.inherits(Actor, function(base) {
-		NavigationPoint.prototype.draw = function(ctx) {
+		NavigationPoint.prototype.draw = function(render) {
 			base.draw.apply(this, arguments);
 
-			ctx.fillStyle = "gold";
-			ctx.beginPath();
-			ctx.arc(this.position.x, this.position.y, 3, 0, 2 * Math.PI, true);
-			ctx.fill();
+			if(render.options.debug) {
+				var ctx = render.context;
+				ctx.fillStyle = "gold";
+				ctx.beginPath();
+				ctx.arc(this.position.x, this.position.y, 3, 0, 2 * Math.PI, true);
+				ctx.fill();
+			}
 		};
 	});
 

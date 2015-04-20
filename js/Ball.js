@@ -24,7 +24,9 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 
 		Ball.prototype.maxHistoryLength = 50;
 
-		Ball.prototype.draw = function(ctx) {
+		Ball.prototype.draw = function(render) {
+
+			var ctx = render.context;
 			
 			ctx.save();
 
