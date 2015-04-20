@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/Actor.js', 'js/NavigationPoint.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, Actor, NavigationPoint) {
+require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint) {
 	function LevelEditor() {
 		Level.apply(this, arguments); //this sucks.
 		
