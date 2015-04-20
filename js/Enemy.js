@@ -85,6 +85,8 @@ function(Pawn, MaybePlayer, Ball, NavigationPoint, Water, Wall) {
 			this.level.score -= this.points;
 
 			this.state = Enemy.STATE_DEAD;
+
+			this.destroy();
 		};
 
 		Enemy.prototype.tick = function(tickEvent) {
