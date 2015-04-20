@@ -1,4 +1,4 @@
-define([], function() {
+define(['js/output.js'], function(output) {
 	return function(audioContext) {
 
 		var soundUrls = {
@@ -11,7 +11,12 @@ define([], function() {
 			golfHit2: "audio/golf-hit2.ogg",
 			golfHit3: "audio/golf-hit3.ogg",
 			golfHit4: "audio/golf-hit4.ogg",
-			zombieHurt: "audio/zombieHurt.ogg"
+			zombieHurt: "audio/zombieHurt.ogg",
+			groan1: "audio/groan1.ogg",
+			groan2: "audio/groan2.ogg",
+			groan3: "audio/groan3.ogg",
+			groan4: "audio/groan4.ogg",
+			groan5: "audio/groan5.ogg"
 		};
 
 		var sounds = {};
@@ -20,12 +25,15 @@ define([], function() {
 			if(!window.AudioContext)
 				return Promise.reject();
 
+			var line = output.log("Loading sound "+key+".");
+			var start = new Date().getTime();
 			return getAudioData(soundUrls[key]).then(function(encoded) {
+				var loaded = new Date().getTime();
+				line.innerHTML += ".. Loaded in "+(loaded - start)+"s.";
 				return new Promise(function(resolve, reject) {
-					var start = new Date().getTime();
 					audioContext.decodeAudioData(encoded, function(buffer) {
-						var end = new Date().getTime();
-						console.info("Decoded "+key+" in %d ms", end - start);
+						var done = new Date().getTime();
+						line.innerHTML += ".. Decoded in "+(done - loaded)+"ms.";
 						sounds[key] = buffer;
 						resolve();
 					}, reject);

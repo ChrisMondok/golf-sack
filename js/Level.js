@@ -1,5 +1,5 @@
-define(['js/Player.js', 'js/Hud.js', 'js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js', 'js/loadSounds.js'],
-function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds) {
+define(['js/Player.js', 'js/Hud.js', 'js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js', 'js/loadSounds.js', 'js/output.js'],
+function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, output) {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
@@ -16,7 +16,7 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds) {
 		loadImages().then(function(images) {
 			loadSounds(self.audioContext).then(function(sounds) {
 				self.initAudio(sounds);
-			})["catch"](function() {
+			})["catch"](function(error) {
 				console.error("NO SOUNDS FOR YOU");
 				return Promise.resolve({});
 			}).then(function() {
@@ -36,6 +36,7 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds) {
 	Level.prototype.hudMargin = 32;
 
 	Level.prototype.init = function(container, images) {
+		output.hide();
 		this.engine = Matter.Engine.create(container, {
 			world: { 
 				gravity: {x: 0, y: 0},
