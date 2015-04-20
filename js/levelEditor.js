@@ -9,6 +9,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		
 		this.points = [];
 		
+		this.placedObjects = [];
+		
 		this.state.brush = Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){return radio.checked}).value;
 		
 		var clickDrawButton = function() {
@@ -41,31 +43,52 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			var position = this.transformWindowSpaceToGameSpace({x: e.pageX, y: e.pageY}, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
 
 			if(e.type === 'click' && Matter.Bounds.contains(this.engine.world.bounds, position)){
-				console.log(this.state.drawing ? this.state.brush : "nothing");
-
+				
 				if(this.state.drawing){
+					this.points.push(this.snapPosition(position));
 					if(this.state.brush == "player"){
-						new Player(this, position).tick = function(){};
+						var p = new Player(this, position);
+						p.tick = function(){};
+						this.placedObjects.push(p);
 						this.stopDrawing();
 					} else if(this.state.brush == "ball"){
-						new Ball(this, position).tick = function(){};
+						var b = new Ball(this, position);
+						b.tick = function(){};
+						this.placedObjects.push(b);
 						this.stopDrawing();
 					} else if(this.state.brush == "enemy"){
-						new Enemy(this, position).tick = function(){};
+						var e = new Enemy(this, position);
+						e.tick = function(){};
+						this.placedObjects.push(e);
 						this.stopDrawing();
 					} else if(this.state.brush == "hole"){
 						console.log("No holes!");
 						this.stopDrawing();
 					} else if(this.state.brush == "erase"){
-						console.log("Can't erase!");
+						this.erase(position);
 						this.stopDrawing();
 					} else {
-					this.points.push(this.snapPosition(position));
 					}
 				}
-				console.log(this.points);
 			}
 		};
+		
+		LevelEditor.prototype.erase = function(position) {
+			this.placedObjects.reverse();
+			for(var i=0; i<this.placedObjects.length; i++){
+				var v = this.placedObjects[i].vertices || this.placedObjects[i].body.vertices || [{x:0,y:0}];
+				if(Matter.Vertices.contains(v, position)){
+					console.log(this.placedObjects[i]);
+					var obj = this.placedObjects[i];
+					if(obj.destroy)
+						obj.destroy();
+					this.placedObjects.splice(i,1);
+					break;
+				}
+			}
+			this.placedObjects.reverse();
+		}
+					
 
 		LevelEditor.prototype.snapPosition = function(position) {
 			this.getActorsOfType(Floor).forEach(function(floor) {
@@ -79,6 +102,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		};
 		
 		LevelEditor.prototype.startDrawing = function() {
+			this.state.drawing = true;
 			this.state.brush = getCurrentBrush();
 			this.points = [];
 			Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){radio.disabled = true});
@@ -98,16 +122,18 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			
 			var b = this.state.brush;
 			if (b == "grass")
-				new Floor(this, this.points);
+				this.placedObjects.push(new Floor(this, this.points));
 			else if(b == "sand")
-				new Sand(this, this.points);
+				this.placedObjects.push(new Sand(this, this.points));
 			else if(b == "water")
-				new Water(this, this.points);
+				this.placedObjects.push(new Water(this, this.points));
 			else if(b == "lava")
 				console.log("The floor is made of lava! (Lava is not yet implemented)");
+			
 			this.points = [];
 			
-				
+			this.state.drawing = false;
+			document.getElementById("actorList").innerHTML = this.placedObjects;
 		}
 		
 		LevelEditor.prototype.draw = function(renderer) {
