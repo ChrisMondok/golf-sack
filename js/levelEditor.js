@@ -55,7 +55,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				return;
 			}
 
-			if(e.type == 'click'){
+			if(e.type == 'click' && e.which == 1){
 				console.log(e);
 				
 				if(this.state.drawing){
