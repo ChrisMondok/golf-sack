@@ -202,6 +202,9 @@ function(Pawn, MaybePlayer, Ball, NavigationPoint, Water, Wall) {
 
 		Enemy.prototype.approachTarget = function(tickEvent) {
 			var toTarget = Matter.Vector.sub(this.target.position || this.target.body.position, this.position);
+			if(Matter.Vector.magnitude(toTarget) < this.radius)
+				return;
+
 			this.direction = Matter.Vector.angle({x:0, y:0}, toTarget);
 			this.position = Matter.Vector.add(this.position, Matter.Vector.mult(Matter.Vector.normalise(toTarget), this.speed * tickEvent.dt));
 		};
