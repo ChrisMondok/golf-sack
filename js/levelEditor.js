@@ -31,9 +31,15 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		var startDrawing = function() {
 			this.state.brush = getCurrentBrush();
 			this.points = [];
+			drawButton.value = "Drawing...";
 		}
 		
 		var stopDrawing = function() {
+			
+			drawButton.value = "Start Drawing";
+			if(this.points.length == 0)
+				return;
+			
 			var b = this.state.brush;
 			if (b == "grass")
 				new Floor(this, this.points);
@@ -43,13 +49,14 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				new Water(this, this.points);
 			else if(b == "lava")
 				console.log("The floor is made of lava! (Lava is not yet implemented)");
+			
 				
 		}
 			
 		
-	//var 
+		var drawButton = document.getElementById("draw")
 		
-		document.getElementById("draw").addEventListener('click',clickDrawButton.bind(this));
+		drawButton.addEventListener('click',clickDrawButton.bind(this));
 		
 	}
 
