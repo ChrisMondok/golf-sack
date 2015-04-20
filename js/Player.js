@@ -59,6 +59,7 @@ define(['js/Actor.js', 'js/Ball.js', 'js/playerInput.js'], function(Actor, Ball,
 		Player.prototype.kill = function() {
 			this.level.score += Infinity;
 			this.level.playSoundAtPoint("dead", this.body.position);
+			this.level.lose();
 			this.destroy();
 		};
 		

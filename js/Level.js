@@ -238,7 +238,11 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 	};
 	
 	Level.prototype.win = function() {
-		new GameEndHud(this, "You won! Your score was " + this.score);
+		new GameEndHud(this, "You won! Your score was " + this.score + "!");
+	}
+	
+	Level.prototype.lose = function() {
+		new GameEndHud(this ,"You lost! You were eaten by zombies!");
 	}
 
 	return Level;
