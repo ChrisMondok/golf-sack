@@ -52,7 +52,7 @@ define([], function() {
 
 			ctx.translate(render.width / 2 - render.center.x,render.height/2 - render.center.y);
 
-			render.level.draw(render);
+			render.level.drawBackground(render);
 
 			for(var a=0; a<render.level.actors.length; a++)
 				if(render.level.actors[a].drawBackground)
@@ -65,6 +65,8 @@ define([], function() {
 			
 			for(var a=0; a<render.level.actors.length; a++)
 				render.level.actors[a].draw(render);
+
+			render.level.draw(render);
 
 			ctx.restore();
 
