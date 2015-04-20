@@ -13,26 +13,40 @@
 		<p style="color:red"><strong>NO CONCAVE HULLS</strong></p>
 		<div id="gameArea">
 		</div>
-		
+
 		<div id="controls">
-			<input type="button" id="draw" value="Start Drawing"></input>
-			<input type="radio" name="brush" value="grass" checked>Grass</input>
-			<input type="radio" name="brush" value="sand">Sand</input>
-			<input type="radio" name="brush" value="water">Water</input>
-			<input type="radio" name="brush" value="lava">Lava</input>
-			<input type="radio" name="brush" value="wall">Wall</input>
-			<input type="radio" name="brush" value="player">Player</input>
-			<input type="radio" name="brush" value="ball">Ball</input>
-			<input type="radio" name="brush" value="enemy">Enemy</input>
-			<input type="radio" name="brush" value="hole">Hole</input>
-			<input type="radio" name="brush" value="nav">Nav Point</input>
-			<input type="radio" name="brush" value="erase">Erase</input>
-			<input type="button" id="exportButton" value="Export"></input>
+			<button type="button" id="draw">Start Drawing</button>
+			<label> <input type="radio" name="brush" value="grass" checked /> Grass </label>
+			<label> <input type="radio" name="brush" value="sand" />Sand</label>
+			<label> <input type="radio" name="brush" value="water" />Water</label>
+			<label> <input type="radio" name="brush" value="lava" />Lava</label>
+			<label> <input type="radio" name="brush" value="wall" />Wall</label>
+			<label> <input type="radio" name="brush" value="player" />Player</label>
+			<label> <input type="radio" name="brush" value="ball" />Ball</label>
+			<label> <input type="radio" name="brush" value="enemy" />Enemy</label>
+			<label> <input type="radio" name="brush" value="hole" />Hole</label>
+			<label> <input type="radio" name="brush" value="nav" />Nav Point</label>
+			<label> <input type="radio" name="brush" value="erase" />Erase</label>
+			<button type="button" id="exportButton">Export</button>
 		</div>
+
+		<form id="parameters">
+			<label>
+				Width
+				<input id="width" type="number" min="800" max="4800" required />
+			</label>
+
+			<label>
+				Height
+				<input id="height" type="number" min="600" max="4800" required />
+			</label>
+
+			<button>Start</button>
+		</form>
 		<p id="exportTextArea"></p>
-		
+
 		<p><a href="index.html">Back</a></p>
-		
+
 		<script src="js/levelEditor.js"></script>
 	</body>
 </html>

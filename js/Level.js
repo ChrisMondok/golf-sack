@@ -4,7 +4,7 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 	World = Matter.World,
 	Bodies = Matter.Bodies;
 
-	function Level(container, images) {
+	function Level(container) {
 		this.fg = [];
 		this.actors = [];
 
