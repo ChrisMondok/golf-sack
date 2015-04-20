@@ -22,6 +22,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		}		
 		
 		document.getElementById("draw").addEventListener('click',clickDrawButton.bind(this));
+		document.getElementById("exportButton").addEventListener('click',this.exp.bind(this));
 		
 	}
 
@@ -133,7 +134,6 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			this.points = [];
 			
 			this.state.drawing = false;
-			document.getElementById("actorList").innerHTML = this.placedObjects;
 		}
 		
 		LevelEditor.prototype.draw = function(renderer) {
@@ -152,6 +152,29 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				ctx.lineTo(np.x, np.y);
 				ctx.stroke();
 			}
+		}
+		
+		LevelEditor.prototype.exp = function() {
+			var output = "";
+			this.placedObjects.forEach(function(obj){
+				if(obj instanceof Water) {
+					output = output + "\nnew Water(this, " + JSON.stringify(obj.vertices) + ");";
+				} else if(obj instanceof Sand) {
+					output = output + "\nnew Sand(this, " + JSON.stringify(obj.vertices) + ");";
+				} else if(obj instanceof Floor) {
+					output = output + "\nnew Floor(this, " + JSON.stringify(obj.vertices) + ");";
+				} else if(obj instanceof Enemy) {
+					output = output + "\nnew Enemy(this, {x:" + obj.position.x + ",y:" + obj.position.y + "});";
+				} else if(obj instanceof Player) {
+					output = output + "\nnew Player(this, {x:" + obj.body.position.x + ",y:" + obj.body.position.y + "});";
+				} else if(obj instanceof Ball) {
+					output = output + "\nnew Ball(this, {x:" + obj.body.position.x + ",y:" + obj.body.position.y + "});";
+				}
+			});
+			console.log(output);
+			
+			document.getElementById("exportTextArea").innerHTML = output;
+			
 		}
 		
 	});
