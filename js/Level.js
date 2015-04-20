@@ -18,7 +18,7 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 				self.initAudio(sounds);
 			})["catch"](function(error) {
 				console.error("NO SOUNDS FOR YOU");
-				return Promise.resolve({});
+				return Promise.resolve(null);
 			}).then(function() {
 				self.init(container, images);
 			});
