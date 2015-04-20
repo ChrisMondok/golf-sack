@@ -45,7 +45,7 @@ define(['js/Actor', 'js/Enemy.js'], function(Actor, Enemy) {
 			ctx.fillRect(render.canvas.width/2 - nameplateWidth/2, render.canvas.height - this.margin - nameplateHeight, nameplateWidth, nameplateHeight);
 
 			ctx.fillStyle = "white";
-			ctx.fillText(this.name, render.canvas.width/2, render.canvas.height - this.margin - nameplateHeight/2);
+			ctx.fillText(this.level.name, render.canvas.width/2, render.canvas.height - this.margin - nameplateHeight/2);
 		};
 
 		Hud.prototype.drawEnemiesCounter = function(render) {
