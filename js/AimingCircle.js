@@ -101,6 +101,7 @@ define(['js/Actor.js', 'js/Player.js', 'js/geometry.js'], function(Actor, Player
 
 			this.target.setMulliganPosition();
 			Matter.Body.applyForce(this.target.body, forcePosition, forceVector);
+			this.level.playSound(["golfHit1", "golfHit2", "golfHit3", "golfHit4"].randomize()[0]);
 		};
 
 		AimingCircle.prototype.destroy = function() {
