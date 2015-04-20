@@ -29,8 +29,44 @@ define(['js/Actor.js'], function(Actor) {
 		
 	}
 	
+	
+	
 	Wall.inherits(Actor, function(base){
 		Wall.prototype.width = 16;
+		
+		Wall.prototype.draw = function(render) {
+			var ctx = render.context;
+			this.bodies.forEach(function (body) {
+				drawBody(ctx, body);
+			});
+		}
+			
+		function drawBody(ctx, body) {
+			if(body.label === "Rectangle Body")
+				drawRectangle(ctx,body);
+			else if(body.label === "Circle Body")
+				drawCircle(ctx,body);
+			else
+				drawVertices(ctx,body.vertices);
+		}
+			
+		function drawRectangle(ctx, body) {
+			drawVertices(ctx, body.vertices);
+		}
+		
+		function drawCircle(ctx, body) {
+			ctx.beginPath();
+			ctx.fillStyle = "black";
+			ctx.arc(body.position.x, body.position.y, body.circleRadius, 0, Math.PI * 2);
+			ctx.fill();
+		}
+		
+		function drawVertices(ctx, verts) {
+			ctx.beginPath();
+			ctx.fillStyle = "black";
+			ctx.polygon(verts);
+			ctx.fill();
+		}
 	});
 	
 	return Wall;
