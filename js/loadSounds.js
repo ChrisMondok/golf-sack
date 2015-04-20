@@ -44,8 +44,9 @@ define(['js/output.js'], function(output) {
 				});
 			}).then(function() {
 				done = true;
-			}, function() {
+			}, function(error) {
 				done = true;
+				return Promise.reject(error);
 			});
 
 			function drawDots() {
