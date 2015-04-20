@@ -25,6 +25,8 @@ define([], function() {
 
 	Actor.prototype.tick = function(tickEvent) { };
 
+	Actor.prototype.onCollisionStart = function(collisionEvent) { };
+
 	Actor.prototype.tickPreProcess = function(tickEvent) {
 		var dt = (this.lastTick ? tickEvent.timestamp - this.lastTick : 0) / 1000;
 

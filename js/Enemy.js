@@ -1,5 +1,5 @@
 define(['js/Pawn.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js', 'js/Water.js', 'js/Wall.js'],
-function(Pawn, Player, Ball, NavigationPoint, Water, Wall) {
+function(Pawn, MaybePlayer, Ball, NavigationPoint, Water, Wall) {
 
 	function Enemy(level, position, direction) {
 		Pawn.apply(this, [level]);
@@ -170,7 +170,7 @@ function(Pawn, Player, Ball, NavigationPoint, Water, Wall) {
 
 		Enemy.prototype.acquireTarget = function() {
 			var interestingThings = [
-				this.level.getActorsOfType(Player),
+				this.level.getActorsOfType(require('js/Player.js')),
 				this.level.getActorsOfType(require('js/Ball.js')),
 				this.level.getActorsOfType(NavigationPoint)
 			].map(function(it) {
@@ -207,7 +207,7 @@ function(Pawn, Player, Ball, NavigationPoint, Water, Wall) {
 		};
 
 		Enemy.prototype.killPlayers = function() {
-			this.level.getActorsOfType(Player).filter(function(player) {
+			this.level.getActorsOfType(require('js/Player.js')).filter(function(player) {
 				return this.getDistanceTo(player) < this.radius + player.body.circleRadius;
 			}, this).forEach(function(player) {
 				player.kill();
