@@ -5,7 +5,7 @@ function(Level, Ball, Enemy, Player, Sand, Water, NavigationPoint) {
 	}
 
 	EnemyDemoLevel.inherits(Level, function(base) {
-		EnemyDemoLevel.prototype.bgm = "audio/synthpunk-garbage-2.ogg";
+		EnemyDemoLevel.prototype.bgm = "bgm2";
 
 		EnemyDemoLevel.prototype.init = function() {
 			base.init.apply(this, arguments);

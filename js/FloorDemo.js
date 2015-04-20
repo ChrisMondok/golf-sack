@@ -6,7 +6,7 @@ function(Level, Ball, Floor, Player, Sand, Water) {
 
 	FloorDemoLevel.inherits(Level, function(base) {
 
-		FloorDemoLevel.prototype.bgm = "audio/synthpunk-garbage.ogg";
+		FloorDemoLevel.prototype.bgm = "bgm1"
 
 		FloorDemoLevel.prototype.init = function() {
 			base.init.apply(this, arguments);

@@ -1,5 +1,5 @@
-define(['js/Player.js', 'js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js'],
-function(Player, rendererer, waveSourceFactory, loadImages) {
+define(['js/Player.js', 'js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js', 'js/loadSounds.js'],
+function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
@@ -10,10 +10,21 @@ function(Player, rendererer, waveSourceFactory, loadImages) {
 
 		var self = this;
 
+		if(window.AudioContext)
+			this.audioContext = new AudioContext();
+
 		loadImages().then(function(images) {
-			self.init(container, images);
-		}, function() {
-			console.error("WTF?");
+			loadSounds(self.audioContext).then(function(sounds) {
+				self.initAudio(sounds);
+			})["catch"](function() {
+				console.error("NO SOUNDS FOR YOU");
+				return Promise.resolve({});
+			}).then(function() {
+				self.init(container, images);
+			});
+		})["catch"](function(error) {
+			console.error("Couldn't initialize the level. This is serious.");
+			console.error(error);
 		});
 	}
 
@@ -56,21 +67,28 @@ function(Player, rendererer, waveSourceFactory, loadImages) {
 		Engine.run(this.engine);
 
 		Matter.Events.on(this.engine, 'tick', this.tick.bind(this));
-
-		this.initAudio();
 	};
 
-	Level.prototype.initAudio = function() {
-		if(window.AudioContext)
-			this.audioContext = new AudioContext();
-		else
-			return;
+	Level.prototype.initAudio = function(sounds) {
+		this.sounds = sounds;
 
 		if(this.bgm) {
-			this.musicSource = waveSourceFactory(this.audioContext, this.bgm);
+			this.musicSource = waveSourceFactory(this.audioContext, sounds[this.bgm]);
 			this.musicSource.loop = true;
 			this.musicSource.connect(this.audioContext.destination);
 			this.musicSource.start(0);
+		}
+	};
+
+	Level.prototype.playSound = function(soundName) {
+		if(this.sounds) {
+			var source = waveSourceFactory(this.audioContext, this.sounds[soundName]);
+			source.connect(this.audioContext.destination);
+			source.start(0);
+
+			setTimeout(function() {
+				source.disconnect();
+			}, 1000 * source.buffer.length / source.buffer.sampleRate);
 		}
 	};
 
