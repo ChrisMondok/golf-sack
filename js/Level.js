@@ -64,6 +64,8 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 		this._handleTouchBound = this.handleTouchEvent.bind(this);
 
 		document.addEventListener('click', this._handlePointerBound);
+		document.addEventListener('mousedown', this._handlePointerBound);
+		document.addEventListener('mouseup', this._handlePointerBound);
 		document.addEventListener('mousemove', this._handlePointerBound);
 		document.addEventListener('touchmove', this._handleTouchBound);
 		document.addEventListener('touchstart', this._handleTouchBound);
@@ -179,10 +181,8 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 	Level.prototype.handlePointerEvent = function(e) {
 		var position = this.transformWindowSpaceToGameSpace({x: e.pageX, y: e.pageY}, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
 
-		if(e.type == 'mousemove') {
+		if(e.type == 'mousemove')
 			this.dispatchMouseMove(position);
-			this.mm = position;
-		}
 
 		if(Matter.Bounds.contains(this.engine.world.bounds, position))
 			e.preventDefault();

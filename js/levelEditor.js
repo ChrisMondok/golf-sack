@@ -1,4 +1,6 @@
 require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js', 'js/Wall.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint, Wall) {
+	var gridSize = 128;
+
 	function LevelEditor(container, width, height) {
 		this.width = width;
 		this.height = height;
@@ -13,8 +15,10 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		this.points = [];
 		
 		this.placedObjects = [];
+
+		this.lastMousePosition = {x: 0, y: 0};
 		
-		this.state.brush = Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){return radio.checked}).value;
+		this.state.brush = Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){return radio.checked;}).value;
 		
 		var clickDrawButton = function() {
 			this.state.drawing = !this.state.drawing;
@@ -22,7 +26,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				this.startDrawing.bind(this)();
 			else
 				this.stopDrawing.bind(this)();
-		}		
+		};
 		
 		document.getElementById("draw").addEventListener('click',clickDrawButton.bind(this));
 		document.getElementById("exportButton").addEventListener('click',this.exp.bind(this));
@@ -34,6 +38,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 
 		LevelEditor.prototype.init = function() {
 			base.init.apply(this, arguments);
+
+			this.engine.render.playerMargin = 0;
 		};
 
 		LevelEditor.prototype.initHud = function() {
@@ -43,7 +49,14 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		LevelEditor.prototype.handlePointerEvent = function(e) {
 			var position = this.transformWindowSpaceToGameSpace({x: e.pageX, y: e.pageY}, {x: this.canvasClientRect.left, y: this.canvasClientRect.top});
 
-			if(e.type === 'click' && Matter.Bounds.contains(this.engine.world.bounds, position)){
+			if(!Matter.Bounds.contains(this.engine.render.controller.getVisibleBounds(this.engine), position))  {
+				this.lastMousePosition = null;
+				this.isPanning = false;
+				return;
+			}
+
+			if(e.type == 'click'){
+				console.log(e);
 				
 				if(this.state.drawing){
 					this.points.push(this.snapPosition(position));
@@ -58,9 +71,9 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 						this.placedObjects.push(b);
 						this.stopDrawing();
 					} else if(this.state.brush == "enemy"){
-						var e = new Enemy(this, position);
-						e.tick = function(){};
-						this.placedObjects.push(e);
+						var enemy = new Enemy(this, position);
+						enemy.tick = function(){};
+						this.placedObjects.push(enemy);
 						this.stopDrawing();
 					} else if(this.state.brush == "nav"){
 						this.placedObjects.push(new NavigationPoint(this,position));
@@ -71,9 +84,31 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 					} else if(this.state.brush == "erase"){
 						this.erase(position);
 						this.stopDrawing();
-					} else {
 					}
 				}
+			}
+
+			if(e.type == 'mousedown' && e.which > 1) {
+				this.isPanning = true;
+				e.preventDefault();
+				e.stopPropagation();
+			}
+
+			if(e.type == 'mouseup' && e.which > 1) {
+				this.isPanning = false;
+				e.preventDefault();
+				e.stopPropagation();
+			}
+
+			if(e.type == 'mousemove') {
+				if(this.isPanning && this.lastMousePosition) {
+					var motion = Matter.Vector.sub(this.lastMousePosition, position);
+					var newCenter = Matter.Vector.add(this.engine.render.center, motion);
+					this.engine.render.controller.moveIntoView(this.engine, newCenter);
+					this.lastMousePosition = Matter.Vector.add(position, motion);
+				}
+				else
+					this.lastMousePosition = position;
 			}
 		};
 		
@@ -110,19 +145,19 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			this.state.drawing = true;
 			this.state.brush = getCurrentBrush();
 			this.points = [];
-			Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){radio.disabled = true});
+			Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){radio.disabled = true;});
 			document.getElementById("draw").value = "Drawing...";
-		}		
+		};
 		
 		var getCurrentBrush = function() {
-			return Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){return radio.checked}).value;
-		}	
+			return Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){return radio.checked;}).value;
+		}	;
 		
 		LevelEditor.prototype.stopDrawing = function() {
 			
 			document.getElementById("draw").value = "Start Drawing";
-			Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){radio.disabled = false});
-			if(this.points.length == 0)
+			Array.prototype.find.call(document.querySelectorAll("input[name='brush']"), function(radio){radio.disabled = false;});
+			if(!this.points.length)
 				return;
 			
 			var b = this.state.brush;
@@ -140,7 +175,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			this.points = [];
 			
 			this.state.drawing = false;
-		}
+		};
 		
 		LevelEditor.prototype.draw = function(renderer) {
 			base.draw.apply(this, arguments);
@@ -152,7 +187,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				var np = this.points[i+1] || this.points[0];
 				ctx.beginPath();
 				ctx.strokeStyle = "black";
-				ctx.arc(p.x, p.y, 2, 0, Math.PI * 2)
+				ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
 				ctx.stroke();
 				ctx.strokeStyle = this.points[i+1] ? "black" : this.state.brush !== 'wall' ? "blue" : "transparent";
 				ctx.beginPath();
@@ -160,7 +195,26 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				ctx.lineTo(np.x, np.y);
 				ctx.stroke();
 			}
-		}
+		};
+
+		LevelEditor.prototype.drawBackground = function(render) {
+			var ctx = render.context;
+
+			ctx.strokeStyle = "lime";
+			ctx.beginPath();
+
+			for(var x = 0; x < this.engine.world.bounds.max.x; x += gridSize) {
+				ctx.moveTo(x, 0);
+				ctx.lineTo(x, this.engine.world.bounds.max.y);
+			}
+
+			for(var y = 0; y < this.engine.world.bounds.max.y; y += gridSize) {
+				ctx.moveTo(0, y);
+				ctx.lineTo(this.engine.world.bounds.max.x, y);
+			}
+
+			ctx.stroke();
+		};
 		
 		LevelEditor.prototype.exp = function() {
 			var output = "";
@@ -191,9 +245,12 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			console.log(output);
 			
 			document.getElementById("exportTextArea").innerHTML = output;
-			
-		}
-		
+		};
+
+		LevelEditor.prototype.adjustViewport = function() {
+			//don't center on players
+		};
+
 	});
 
 	var paramForm = document.getElementById("parameters");
