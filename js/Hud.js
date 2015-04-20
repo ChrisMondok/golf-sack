@@ -50,7 +50,7 @@ define(['js/Actor', 'js/Enemy.js'], function(Actor, Enemy) {
 
 		Hud.prototype.drawEnemiesCounter = function(render) {
 			var ctx = render.context;
-			var numEnemies = this.level.getActorsOfType(Enemy).length;
+			var numEnemies = this.level.getActorsOfType(Enemy).filter(function(enemy) { return !enemy.isDead(); }).length;
 
 			var label = "zombies";
 
