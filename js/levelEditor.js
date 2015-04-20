@@ -165,8 +165,6 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				this.placedObjects.push(new Sand(this, this.points));
 			else if(b == "water")
 				this.placedObjects.push(new Water(this, this.points));
-			else if(b == "lava")
-				console.log("The floor is made of lava! (Lava is not yet implemented)");
 			else if(b == "wall")
 				this.placedObjects.push(new Wall(this, this.points));
 			
