@@ -88,17 +88,18 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				}
 			}
 			this.placedObjects.reverse();
-		}
+		};
 					
-
 		LevelEditor.prototype.snapPosition = function(position) {
-			this.getActorsOfType(Floor).forEach(function(floor) {
-				floor.vertices.forEach(function(v) {
-					var dist = Matter.Vector.magnitude(Matter.Vector.sub(v, position));
-					if(dist < this.snapDistance)
-						position = Matter.Common.clone(v);
-				}, this);
-			}, this);
+			var nearestVert = this.getActorsOfType(Floor).map(function(floor) {
+				return floor.vertices;
+			}).concat(this.points).flatten().sortBy(function(vert) {
+				return Matter.Vector.magnitudeSquared(Matter.Vector.sub(vert, position));
+			})[0];
+
+			if(nearestVert && Matter.Vector.magnitude(Matter.Vector.sub(nearestVert, position)) < this.snapDistance)
+				return Matter.Common.clone(nearestVert);
+
 			return position;
 		};
 		
