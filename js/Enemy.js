@@ -69,7 +69,7 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 
 		Enemy.prototype.speak = function() {
 			if(this.state == Enemy.STATE_HUNTING || this.state == Enemy.STATE_CHASING) {
-				this.level.playSound(["groan1", "groan2", "groan3", "groan4", "groan5"].randomize()[0]);
+				this.level.playSoundAtPoint(["groan1", "groan2", "groan3", "groan4", "groan5"].randomize()[0], this.position);
 				this.speechCooldown = (Math.random() + 0.5)*Enemy.prototype.speechCooldown;
 			}
 		};
