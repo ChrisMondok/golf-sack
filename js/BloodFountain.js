@@ -14,6 +14,8 @@ define(['js/Actor.js', 'js/Blood.js'], function(Actor, Blood) {
 		this.spawnAfter.sort();
 
 		this.lifespan = 0;
+
+		new Blood(this.level, this.position);
 	}
 
 	BloodFountain.inherits(Actor, function(base) {
