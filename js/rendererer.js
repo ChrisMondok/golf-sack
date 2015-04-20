@@ -166,26 +166,7 @@ define([], function() {
 	}
 
 	function drawBody(ctx, body) {
-		if(body.label === "Rectangle Body")
-			drawRectangle(ctx,body);
-		else if(body.label === "Circle Body")
-			drawCircle(ctx,body);
-		else
-			drawVertices(ctx,body.vertices);
-	}
-	
-	function drawRectangle(ctx, body) {
-		drawVertices(ctx, body.vertices);
-	}
-	
-	function drawCircle(ctx, body) {
-
-	}
-	
-	function drawVertices(ctx, verts) {
-		ctx.beginPath();
-		ctx.polygon(verts);
-		ctx.fill();
+		// NO_OP
 	}
 	
 	return Rendererer;
