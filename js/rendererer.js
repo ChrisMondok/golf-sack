@@ -7,7 +7,7 @@ define([], function() {
 			var defaults = {
 				width: 800,
 				height: 600,
-				playerMargin: 200,
+				playerMargin: 100,
 				center: {x: 400, y: 300},
 				options: {},
 				images: {}
@@ -42,15 +42,23 @@ define([], function() {
 			render.frame++;
 			render.timestamp = new Date().getTime();
 
+			render.controller.renderCenteredOn(engine, render.center);
+
+			if(render.options.debug) {
+				updateDebugGraph(render);
+			}
+		},
+
+		renderCenteredOn: function(engine, center) {
+			var render = engine.render;
 			var world = engine.world;
 			var ctx = render.context;
 			var bodies = world.bodies;
 			
-
 			ctx.save();
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-			ctx.translate(render.width / 2 - render.center.x,render.height/2 - render.center.y);
+			ctx.translate(render.width / 2 - center.x,render.height/2 - center.y);
 
 			render.level.drawBackground(render);
 
@@ -70,9 +78,10 @@ define([], function() {
 
 			ctx.restore();
 
-			if(render.options.debug) {
-				updateDebugGraph(render);
-			}
+			for(var a=0; a<render.level.actors.length; a++)
+				render.level.actors[a].drawHud(render);
+
+			render.level.drawHud(render);
 		},
 
 		moveIntoView: function(engine, point) {
@@ -83,6 +92,16 @@ define([], function() {
 
 			render.center.x = render.center.x.clamp(engine.world.bounds.min.x + render.width/2, engine.world.bounds.max.x - render.width/2);
 			render.center.y = render.center.y.clamp(engine.world.bounds.min.y + render.height/2, engine.world.bounds.max.y - render.height/2);
+		},
+
+		getVisibleBounds: function(engine) {
+			var x = engine.render.center.x - engine.render.canvas.width / 2;
+			var y = engine.render.center.y - engine.render.canvas.height / 2;
+
+			return {
+				min: { x: x, y: y },
+				max: { x: x + engine.render.canvas.width, y: y + engine.render.canvas.height }
+			};
 		},
 		
 		clear: function() {

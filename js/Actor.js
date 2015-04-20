@@ -11,6 +11,7 @@ define([], function() {
 	}
 
 	Actor.prototype.draw = function(render) { };
+	Actor.prototype.drawHud = function(render) { };
 
 	Actor.prototype.destroy = function() {
 		this.destroyed = true;

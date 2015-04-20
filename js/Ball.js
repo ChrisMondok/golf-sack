@@ -42,7 +42,6 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			}
 
 			ctx.restore();
-
 		};
 		
 		Ball.prototype.SLOW_DOWN_UNDER_THIS_SPEED = 0.3;
@@ -76,10 +75,41 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			if(this.level.getActorsOfType(Water).some(function(water) {
 				return Matter.Vertices.contains(water.vertices, this.body.position);
 			}, this)) {
+				this.level.playSound("sploosh");
 				this.mulligan();
 				return;
 			}
 
+			var previewSize = 128;
+
+			var render = this.level.engine.render;
+			render.controller.renderCenteredOn(this.level.engine, this.body.position);
+			this.imageData = render.context.getImageData(render.canvas.width/2 - previewSize/2, render.canvas.height/2 - previewSize/2, previewSize, previewSize);
+		};
+
+		Ball.prototype.drawHud = function(render) {
+			var viewport = render.controller.getVisibleBounds(this.level.engine);
+
+			if(Matter.Bounds.contains(viewport, this.body.position))
+				return;
+
+			if(!this.imageData)
+				return;
+
+			var screenspacePosition = Matter.Vector.sub(Matter.Vector.sub(this.body.position, viewport.min), {x: this.imageData.width / 2, y: this.imageData.height / 2});
+
+			var x = screenspacePosition.x.clamp(0, render.canvas.width - this.imageData.width);
+			var y = screenspacePosition.y.clamp(0, render.canvas.height - this.imageData.height);
+
+			render.context.putImageData(this.imageData, x, y);
+
+			render.context.beginPath();
+			render.context.moveTo(x, y);
+			render.context.lineTo(x + this.imageData.width, y);
+			render.context.lineTo(x + this.imageData.width, y + this.imageData.height);
+			render.context.lineTo(x, y + this.imageData.height);
+			render.context.closePath();
+			render.context.stroke();
 		};
 
 		Ball.prototype.adjustFriction = function() {
