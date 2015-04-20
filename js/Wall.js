@@ -32,7 +32,7 @@ define(['js/Actor.js'], function(Actor) {
 	
 	
 	Wall.inherits(Actor, function(base){
-		Wall.prototype.width = 16;
+		Wall.prototype.width = 24;
 		
 		Wall.prototype.draw = function(render) {
 			var ctx = render.context;
