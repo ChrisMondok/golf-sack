@@ -1,4 +1,4 @@
-define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
+define(['js/Actor.js', 'js/Ball.js', 'js/playerInput.js'], function(Actor, Ball, playerInput) {
 	function Player(level, position) {
 		Actor.apply(this, [level]);
 
@@ -29,6 +29,17 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 			}
 		};
 
+		Player.prototype.onCollisionStart = function(collisionEvent) {
+			var balls = this.level.getActorsOfType(Ball);
+
+			collisionEvent.pairs.forEach(function(pair) {
+				if(balls.some(function(ball) {
+					return ball.body == pair.bodyA || ball.body == pair.bodyB;
+				}))
+					this.level.score++;
+			}, this);
+		};
+
 		Player.prototype.doMovement = function(tickEvent) {
 			var walkForce = Matter.Vector.mult(playerInput.getNormalizedMovement(), this.legStrength);
 
@@ -54,11 +65,11 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 		Player.prototype.draw = function(render) {
 			var ctx = render.context;
 			ctx.beginPath();
-			ctx.fillStyle = "blue";
 			ctx.strokeStyle = "white";
 			ctx.arc(this.body.position.x, this.body.position.y, this.body.circleRadius, 0, Math.PI * 2);
-			ctx.fill();
 			ctx.stroke();
+
+			ctx.drawImageRotated(render.images.player, this.body.position.x, this.body.position.y, this.body.angle);
 		};
 	});
 

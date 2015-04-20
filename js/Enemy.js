@@ -1,5 +1,5 @@
 define(['js/Pawn.js', 'js/Player.js', 'js/Ball.js', 'js/NavigationPoint.js', 'js/Water.js', 'js/Wall.js'],
-function(Pawn, Player, Ball, NavigationPoint, Water, Wall) {
+function(Pawn, MaybePlayer, Ball, NavigationPoint, Water, Wall) {
 
 	function Enemy(level, position, direction) {
 		Pawn.apply(this, [level]);
@@ -12,8 +12,10 @@ function(Pawn, Player, Ball, NavigationPoint, Water, Wall) {
 		this.hasBeenChasingTheSameThingFor = 0;
 
 		this.radius = 10;
-		
+
 		this.vertices = generateCircleVertices(this.radius, this.position);
+
+		this.image = ["zombie1", "zombie2"].randomize()[0];
 		
 		function generateCircleVertices(r, pos, num) {
 			var n = num || 16;
@@ -168,7 +170,7 @@ function(Pawn, Player, Ball, NavigationPoint, Water, Wall) {
 
 		Enemy.prototype.acquireTarget = function() {
 			var interestingThings = [
-				this.level.getActorsOfType(Player),
+				this.level.getActorsOfType(require('js/Player.js')),
 				this.level.getActorsOfType(require('js/Ball.js')),
 				this.level.getActorsOfType(NavigationPoint)
 			].map(function(it) {
@@ -205,7 +207,7 @@ function(Pawn, Player, Ball, NavigationPoint, Water, Wall) {
 		};
 
 		Enemy.prototype.killPlayers = function() {
-			this.level.getActorsOfType(Player).filter(function(player) {
+			this.level.getActorsOfType(require('js/Player.js')).filter(function(player) {
 				return this.getDistanceTo(player) < this.radius + player.body.circleRadius;
 			}, this).forEach(function(player) {
 				player.kill();
@@ -215,12 +217,7 @@ function(Pawn, Player, Ball, NavigationPoint, Water, Wall) {
 		Enemy.prototype.draw = function(render) {
 			base.draw.apply(this, arguments);
 			
-			var ctx = render.context;
-
-			ctx.beginPath();
-			ctx.fillStyle = "purple";
-			ctx.arc(this.position.x, this.position.y, this.radius, 0, 2*Math.PI);
-			ctx.fill();
+			render.context.drawImageRotated(render.images[this.image], this.position.x, this.position.y, this.direction);
 		};
 	});
 	

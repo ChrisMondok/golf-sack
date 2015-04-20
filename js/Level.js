@@ -74,6 +74,7 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 		Engine.run(this.engine);
 
 		Matter.Events.on(this.engine, 'tick', this.tick.bind(this));
+		Matter.Events.on(this.engine, 'collisionStart', this.collisionStart.bind(this));
 
 		this.initHud();
 	};
@@ -155,6 +156,12 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 		if(this.audioContext) {
 			this.audioContext.listener.setPosition(this.engine.render.center.x, this.engine.render.center.y, 1);
 		}
+	};
+
+	Level.prototype.collisionStart = function(e) {
+		this.actors.forEach(function(actor) {
+			actor.onCollisionStart(e);
+		});
 	};
 
 	Level.prototype.adjustViewport = function() {
