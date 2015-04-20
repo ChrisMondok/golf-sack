@@ -1,5 +1,8 @@
 define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/Water.js', 'js/geometry.js', 'js/noiseSourceFactory.js', 'js/playerInput.js'],
 	function(Actor, AimingCircle, Enemy, Floor, Water, geometry, noiseSourceFactory, playerInput) {
+
+	var getImageDataIsFuxored = false;
+
 	function Ball(level, position) {
 		Actor.apply(this, [level]);	
 
@@ -84,7 +87,14 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 
 			var render = this.level.engine.render;
 			render.controller.renderCenteredOn(this.level.engine, this.body.position);
-			this.imageData = render.context.getImageData(render.canvas.width/2 - previewSize/2, render.canvas.height/2 - previewSize/2, previewSize, previewSize);
+
+			if(!getImageDataIsFuxored) {
+				try {
+					this.imageData = render.context.getImageData(render.canvas.width/2 - previewSize/2, render.canvas.height/2 - previewSize/2, previewSize, previewSize);
+				} catch (e) {
+					getImageDataIsFuxored = true;
+				}
+			}
 		};
 
 		Ball.prototype.drawHud = function(render) {
