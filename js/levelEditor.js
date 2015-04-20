@@ -56,8 +56,6 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			}
 
 			if(e.type == 'click' && e.which == 1){
-				console.log(e);
-				
 				if(this.state.drawing){
 					this.points.push(this.snapPosition(position));
 					if(this.state.brush == "player"){
