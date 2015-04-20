@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js', 'js/Wall.js', 'js/Hole.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint, Wall, Hole) {
+require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Fairway.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js', 'js/Wall.js', 'js/Hole.js'], function(Level, Ball, Player, Floor, Fairway, Sand, Water, Enemy, NavigationPoint, Wall, Hole) {
 	var gridSize = 128;
 
 	function LevelEditor(container, width, height) {
@@ -161,6 +161,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 			var b = this.state.brush;
 			if (b == "grass")
 				this.placedObjects.push(new Floor(this, this.points));
+			else if(b == "fairway")
+				this.placedObjects.push(new Fairway(this, this.points));
 			else if(b == "sand")
 				this.placedObjects.push(new Sand(this, this.points));
 			else if(b == "water")
@@ -221,6 +223,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 					output = output + "\nnew Water(this, " + JSON.stringify(obj.vertices) + ");";
 				} else if(obj instanceof Sand) {
 					output = output + "\nnew Sand(this, " + JSON.stringify(obj.vertices) + ");";
+				} else if(obj instanceof Fairway) {
+					output = output + "\nnew Fairway(this, " + JSON.stringify(obj.vertices) + ");";
 				} else if(obj instanceof Floor) {
 					output = output + "\nnew Floor(this, " + JSON.stringify(obj.vertices) + ");";
 				} else if(obj instanceof Wall) {

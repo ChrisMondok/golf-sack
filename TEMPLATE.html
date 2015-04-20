@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+	<head>
+		<title>LEVEL NAME HERE</title>
+		<script src="lib/matter-0.8.0.min.js"></script>
+		<script src="lib/es6-promise-2.0.1.min.js"></script>
+		<script src="lib/require.js"></script>
+		<script src="lib/extensions.js"></script>
+		<script src="lib/sugar.min.js"></script>
+	</head>
+	<body>
+		<h2>Hole Two</h2>
+		<div id="gameArea">
+		</div>
+		<p><a href="index.html">Back</a></p>
+
+		<script>
+require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Fairway.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js', 'js/Wall.js', 'js/Hole.js'],
+		function(Level, Ball, Player, Floor, Fairway, Sand, Water, Enemy, NavigationPoint, Wall, Hole) {
+			function LevelNameHere() {
+				Level.apply(this, arguments);
+			}
+
+			LevelNameHere.inherits(Level, function(base) {
+
+
+				LevelNameHere.prototype.init = function() {
+					this.name = "LEVEL NAME HERE";
+
+					/************************
+					 * paste yer level here *
+					 ************************/
+				};
+
+				LevelNameHere.prototype.initAudio = function() {
+					this.bgm = "bgm1";
+
+					base.initAudio.apply(this, arguments);
+				};
+			});
+
+			var level = new LevelNameHere(document.getElementById("gameArea"));
+
+			return LevelNameHere;
+		});
+		</script>
+	</body>
+</html>
