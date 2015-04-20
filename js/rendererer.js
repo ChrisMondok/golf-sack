@@ -7,7 +7,8 @@ define([], function() {
 			var defaults = {
 				width: 800,
 				height: 600,
-				viewport: {x: 0, y: 0},
+				playerMargin: 200,
+				center: {x: 400, y: 300},
 				options: {},
 				images: {}
 			};
@@ -49,7 +50,7 @@ define([], function() {
 			ctx.save();
 			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-			ctx.translate(-render.viewport.x, -render.viewport.y);
+			ctx.translate(render.width / 2 - render.center.x,render.height/2 - render.center.y);
 
 			for(var a=0; a<render.level.actors.length; a++)
 				if(render.level.actors[a].drawBackground)
@@ -68,6 +69,16 @@ define([], function() {
 			if(render.options.debug) {
 				updateDebugGraph(render);
 			}
+		},
+
+		moveIntoView: function(engine, point) {
+			var render = engine.render;
+
+			render.center.x = render.center.x.clamp(point.x - render.playerMargin, point.x + render.playerMargin);
+			render.center.y = render.center.y.clamp(point.y - render.playerMargin, point.y + render.playerMargin);
+
+			render.center.x = render.center.x.clamp(engine.world.bounds.min.x + render.width/2, engine.world.bounds.max.x - render.width/2);
+			render.center.y = render.center.y.clamp(engine.world.bounds.min.y + render.height/2, engine.world.bounds.max.y - render.height/2);
 		},
 		
 		clear: function() {

@@ -1,5 +1,5 @@
-define(['js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js'],
-function(rendererer, waveSourceFactory, loadImages) {
+define(['js/Player.js', 'js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js'],
+function(Player, rendererer, waveSourceFactory, loadImages) {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
@@ -15,7 +15,6 @@ function(rendererer, waveSourceFactory, loadImages) {
 		}, function() {
 			console.error("WTF?");
 		});
-
 	}
 
 	Level.prototype.bgm = null;
@@ -36,8 +35,6 @@ function(rendererer, waveSourceFactory, loadImages) {
 				controller: rendererer,
 				level: this,
 				images: images,
-				width: this.width,
-				height: this.height,
 				options: {
 					debug: true
 				}
@@ -57,6 +54,8 @@ function(rendererer, waveSourceFactory, loadImages) {
 		document.addEventListener('touchend', this._handleTouchBound);
 
 		Engine.run(this.engine);
+
+		Matter.Events.on(this.engine, 'tick', this.tick.bind(this));
 
 		this.initAudio();
 	};
@@ -87,6 +86,31 @@ function(rendererer, waveSourceFactory, loadImages) {
 		return this.actors.filter(function(actor) {
 			return actor instanceof type;
 		});
+	};
+
+	Level.prototype.tick = function() {
+		this.adjustViewport();
+	};
+
+	Level.prototype.adjustViewport = function() {
+		var players = this.getActorsOfType(Player);
+
+		if(!players.length)
+			return;
+
+		var averagePlayerPosition = {x: 0, y: 0};
+
+		players.forEach(function(player) {
+			averagePlayerPosition.x += player.body.position.x;
+			averagePlayerPosition.y += player.body.position.y;
+		});
+
+		averagePlayerPosition.x /= players.length;
+		averagePlayerPosition.y /= players.length;
+
+		this.engine.render.controller.moveIntoView(this.engine, averagePlayerPosition);
+
+		//console.log(averagePlayerPosition);
 	};
 
 	Level.prototype.handlePointerEvent = function(e) {
