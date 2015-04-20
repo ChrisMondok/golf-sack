@@ -7,7 +7,7 @@ function(Level, NavigationPoint, Player, Ball, Floor, Sand, Enemy) {
 
 	BigLevel.inherits(Level, function(base) {
 
-		//BigLevel.prototype.bgm = "bgm4";
+		BigLevel.prototype.bgm = "bgm4";
 
 		BigLevel.prototype.width = 3000;
 		BigLevel.prototype.height = 3000;

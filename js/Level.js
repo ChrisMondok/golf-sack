@@ -1,5 +1,5 @@
-define(['js/Player.js', 'js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js', 'js/loadSounds.js'],
-function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
+define(['js/Player.js', 'js/Hud.js', 'js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js', 'js/loadSounds.js', 'js/output.js'],
+function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, output) {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
@@ -16,15 +16,15 @@ function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 		loadImages().then(function(images) {
 			loadSounds(self.audioContext).then(function(sounds) {
 				self.initAudio(sounds);
-			})["catch"](function() {
+			})["catch"](function(error) {
 				console.error("NO SOUNDS FOR YOU");
 				return Promise.resolve({});
 			}).then(function() {
 				self.init(container, images);
 			});
 		})["catch"](function(error) {
-			console.error("Couldn't initialize the level. This is serious.");
 			console.error(error);
+			alert("Couldn't initialize the level. This is serious.");
 		});
 	}
 
@@ -32,8 +32,11 @@ function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 
 	Level.prototype.width = 800;
 	Level.prototype.height = 600;
+	Level.prototype.name = "Anonymous Level";
+	Level.prototype.hudMargin = 32;
 
 	Level.prototype.init = function(container, images) {
+		output.hide();
 		this.engine = Matter.Engine.create(container, {
 			world: { 
 				gravity: {x: 0, y: 0},
@@ -52,6 +55,8 @@ function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 			}
 		});
 
+		this.score = 0;
+
 		//yuck
 		this.canvasClientRect = this.engine.render.canvas.getBoundingClientRect();
 
@@ -67,6 +72,8 @@ function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 		Engine.run(this.engine);
 
 		Matter.Events.on(this.engine, 'tick', this.tick.bind(this));
+
+		this.initHud();
 	};
 
 	Level.prototype.initAudio = function(sounds) {
@@ -78,6 +85,10 @@ function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 			this.musicSource.connect(this.audioContext.destination);
 			this.musicSource.start(0);
 		}
+	};
+
+	Level.prototype.initHud = function() {
+		new Hud(this);
 	};
 
 	Level.prototype.playSound = function(soundName) {
@@ -92,7 +103,7 @@ function(Player, rendererer, waveSourceFactory, loadImages, loadSounds) {
 		}
 	};
 
-	Level.prototype.drawBackground = function(render) {};
+	Level.prototype.drawBackground = function(render) { };
 	Level.prototype.draw = function(render) { };
 	Level.prototype.drawHud = function(render) { };
 

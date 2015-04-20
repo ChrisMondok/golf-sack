@@ -1,4 +1,4 @@
-define([], function() {
+define(['js/output.js'], function(output) {
 	return function() {
 		var imageUrls = {
 			water: "images/water.png",
@@ -12,13 +12,13 @@ define([], function() {
 			var image = document.createElement('img');
 			images[key] = image;
 
-			console.log("LOAD %s", key);
+			var log = output.log("Load image "+key+".");
 
 			return new Promise(function(resolve, reject) {
 
 				image.addEventListener('load', function(loaded) {
 					images[key] = image;
-					console.log("LOADED");
+					log.innerHTML += ".. Done";
 					resolve();
 				});
 

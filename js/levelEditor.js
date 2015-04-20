@@ -31,13 +31,10 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 
 		LevelEditor.prototype.init = function() {
 			base.init.apply(this, arguments);
+		};
 
-			//var ceil = new Wall(this,[{x:0,y:0},{x:800,y:0},{x:800,y:50},{x:0,y:50}]);
-			//var ground = new Wall(this,[{x:100,y:350},{x:300,y:450},{x:300,y:500}]);
-			//var left = new Wall(this,[{x:0,y:0},{x:810,y:0},{x:810,y:60},{x:0,y:60}]);
-			//var right = new Wall(this,[{x:0,y:0},{x:810,y:0},{x:810,y:60},{x:0,y:60}]);
-			//this.addToWorld([ground, left, right]);
-			
+		LevelEditor.prototype.initHud = function() {
+			//intentionally do nothing
 		};
 		
 		LevelEditor.prototype.handlePointerEvent = function(e) {
