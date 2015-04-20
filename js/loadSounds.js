@@ -4,7 +4,9 @@ define([], function() {
 		var soundUrls = {
 			sploosh: "audio/sploosh.ogg",
 			bgm1: "audio/synthpunk-garbage.ogg",
-			bgm2: "audio/synthpunk-garbage-2.ogg"
+			bgm2: "audio/synthpunk-garbage-2.ogg",
+			bgm3: "audio/synthpunk-garbage-4.ogg",
+			bgm4: "audio/synthpunk-garbage-5.ogg"
 		};
 
 		var sounds = {};
