@@ -20,6 +20,9 @@ define(['js/Actor.js'], function(Actor) {
 			ctx.beginPath();
 			ctx.polygon(this.vertices);
 			ctx.fill();
+
+//			ctx.fillStyle = render.patterns.grass;
+//			ctx.fill();
 		};
 	});
 	
