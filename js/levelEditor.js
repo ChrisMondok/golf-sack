@@ -1,4 +1,4 @@
-require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/Actor.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, Actor) {
+require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint) {
 	function LevelEditor() {
 		Level.apply(this, arguments); //this sucks.
 		
@@ -62,6 +62,9 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 						e.tick = function(){};
 						this.placedObjects.push(e);
 						this.stopDrawing();
+					} else if(this.state.brush == "nav"){
+						this.placedObjects.push(new NavigationPoint(this,position));
+						//this.stopDrawing();
 					} else if(this.state.brush == "hole"){
 						console.log("No holes!");
 						this.stopDrawing();
@@ -138,6 +141,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		
 		LevelEditor.prototype.draw = function(renderer) {
 			base.draw.apply(this, arguments);
+			if(this.state.brush === 'nav')
+				return;
 			var ctx = renderer.context;
 			for(var i=0; i<this.points.length; i++) {
 				var p = this.points[i];
@@ -156,6 +161,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		
 		LevelEditor.prototype.exp = function() {
 			var output = "";
+			var navPoints = [];
 			this.placedObjects.forEach(function(obj){
 				if(obj instanceof Water) {
 					output = output + "\nnew Water(this, " + JSON.stringify(obj.vertices) + ");";
@@ -169,8 +175,14 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 					output = output + "\nnew Player(this, {x:" + obj.body.position.x + ",y:" + obj.body.position.y + "});";
 				} else if(obj instanceof Ball) {
 					output = output + "\nnew Ball(this, {x:" + obj.body.position.x + ",y:" + obj.body.position.y + "});";
+				} else if(obj instanceof NavigationPoint) {
+					navPoints.push(obj.position);
 				}
 			});
+			if(navPoints.length){
+				output = output + "\n" + JSON.stringify(navPoints) + ".forEach(function(nav){new Navpoint(this, nav)},this);";
+			}
+			
 			console.log(output);
 			
 			document.getElementById("exportTextArea").innerHTML = output;
