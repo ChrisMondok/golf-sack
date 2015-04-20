@@ -184,11 +184,6 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 			this.mm = position;
 		}
 
-		if(e.type == 'click') {
-			console.log('{x: %d, y: %d}', position.x, position.y);
-			this.playSoundAtPoint("sploosh", position);
-		}
-
 		if(Matter.Bounds.contains(this.engine.world.bounds, position))
 			e.preventDefault();
 	};
