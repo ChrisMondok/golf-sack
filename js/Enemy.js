@@ -68,6 +68,8 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			if(this.state == Enemy.STATE_DEAD)
 				return;
 
+			this.level.playSound("zombieHurt");
+
 			this.state = Enemy.STATE_DEAD;
 		};
 

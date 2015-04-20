@@ -10,7 +10,8 @@ define([], function() {
 			golfHit1: "audio/golf-hit1.ogg",
 			golfHit2: "audio/golf-hit2.ogg",
 			golfHit3: "audio/golf-hit3.ogg",
-			golfHit4: "audio/golf-hit4.ogg"
+			golfHit4: "audio/golf-hit4.ogg",
+			zombieHurt: "audio/zombieHurt.ogg"
 		};
 
 		var sounds = {};
