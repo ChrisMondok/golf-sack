@@ -2,20 +2,31 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 	function Player(level, position) {
 		Actor.apply(this, [level]);
 
-		this.body = Matter.Bodies.circle(position.x, position.y, 15, {frictionAir: 0.25});
-		this.body.label = "Player";
+		this.spawnPoint = position;
 
-		level.addToWorld(this.body);
+		this.createBody();
 	}
 
 	Player.inherits(Actor, function(base) {
 
 		Player.prototype.legStrength = 0.0025;
 
+		Player.prototype.createBody = function() {
+			this.body = Matter.Bodies.circle(this.spawnPoint.x, this.spawnPoint.y, 15, {frictionAir: 0.25});
+			this.body.label = "Player";
+
+			this.level.addToWorld(this.body);
+		};
+
 		Player.prototype.tick = function(tickEvent) {
 			base.tick.apply(this, arguments);
 
 			this.doMovement(tickEvent);
+
+			if(this.level.pointIsOutOfBounds(this.body.position)) {
+				this.level.removeFromWorld(this.body);
+				this.createBody();
+			}
 		};
 
 		Player.prototype.doMovement = function(tickEvent) {
@@ -36,6 +47,7 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 
 		Player.prototype.kill = function() {
 			this.level.score += Infinity;
+			this.level.playSoundAtPoint("dead", this.body.position);
 			this.destroy();
 		};
 		
@@ -47,7 +59,7 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 			ctx.arc(this.body.position.x, this.body.position.y, this.body.circleRadius, 0, Math.PI * 2);
 			ctx.fill();
 			ctx.stroke();
-		}
+		};
 	});
 
 	return Player;
