@@ -1,24 +1,32 @@
-define(['js/rendererer.js', 'js/waveSourceFactory.js'], function(rendererer, waveSourceFactory) {
+define(['js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js'],
+function(rendererer, waveSourceFactory, loadImages) {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
 
-	function Level(container) {
+	function Level(container, images) {
 		this.fg = [];
 		this.actors = [];
 
+		var self = this;
 
-		this.init(container);
+		loadImages().then(function(images) {
+			self.init(container, images);
+		}, function() {
+			console.error("WTF?");
+		});
+
 	}
 
 	Level.prototype.bgm = null;
 
-	Level.prototype.init = function(container) {
+	Level.prototype.init = function(container, images) {
 		this.engine = Matter.Engine.create(container, {
 			world: { gravity: {x: 0, y: 0} },
 			render: {
 				controller: rendererer,
 				level: this,
+				images: images,
 				options: {
 					debug: true
 				}

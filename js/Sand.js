@@ -8,6 +8,16 @@ define(['js/Floor.js'], function(Floor) {
 
 		Sand.prototype.friction = 0.1;
 
+		Sand.prototype.draw = function(render) {
+			base.draw.apply(this, arguments);
+
+			var ctx = render.context;
+
+			ctx.fillStyle = render.patterns.sand;
+			ctx.beginPath();
+			ctx.polygon(this.vertices);
+			ctx.fill();
+		};
 	});
 
 	return Sand;

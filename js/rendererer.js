@@ -5,7 +5,8 @@ define([], function() {
 		create: function(config) {
 			
 			var defaults = {
-				options: {}
+				options: {},
+				images: {}
 			};
 
 			var render = Matter.Common.extend(defaults, config);
@@ -14,6 +15,11 @@ define([], function() {
 			render.controller = Rendererer;
 			render.canvas = createCanvas(800,600);
 			render.context = render.canvas.getContext("2d");
+
+			render.patterns = {};
+			for(var key in render.images)
+				render.patterns[key] = render.context.createPattern(render.images[key], "repeat");
+
 			
 			config.element.appendChild(render.canvas);
 

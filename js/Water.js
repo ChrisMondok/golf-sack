@@ -22,6 +22,35 @@ define(['js/Floor.js', 'js/geometry.js'], function(Floor, geometry) {
 
 			return false;
 		};
+
+		Water.prototype.draw = function(render) {
+			base.draw.apply(this, arguments);
+
+			var ctx = render.context;
+			ctx.save();
+
+				ctx.beginPath();
+				ctx.polygon(this.vertices);
+
+				ctx.fillStyle = render.patterns.water;
+				ctx.clip();
+
+				var offsetPercent = (render.timestamp % 6000)/6000;
+				var offsetPX = offsetPercent * render.images.water.width;
+
+				ctx.save();
+					ctx.translate(offsetPX, 0);
+					ctx.fillRect(-offsetPX, 0, render.canvas.width + offsetPX, render.canvas.height);
+				ctx.restore();
+
+				ctx.save();
+					ctx.translate(0, offsetPX);
+					ctx.fillRect(0, -offsetPX, render.canvas.width, render.canvas.height + offsetPX);
+				ctx.restore();
+
+			ctx.restore();
+
+		}
 	});
 
 	return Water;
