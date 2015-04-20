@@ -22,7 +22,10 @@ define([], function() {
 
 			return getAudioData(soundUrls[key]).then(function(encoded) {
 				return new Promise(function(resolve, reject) {
+					var start = new Date().getTime();
 					audioContext.decodeAudioData(encoded, function(buffer) {
+						var end = new Date().getTime();
+						console.info("Decoded "+key+" in %d ms", end - start);
 						sounds[key] = buffer;
 						resolve();
 					}, reject);
