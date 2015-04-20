@@ -38,6 +38,16 @@ define(['js/Actor.js', 'js/playerInput.js'], function(Actor, playerInput) {
 			this.level.score += Infinity;
 			this.destroy();
 		};
+		
+		Player.prototype.draw = function(render) {
+			var ctx = render.context;
+			ctx.beginPath();
+			ctx.fillStyle = "blue";
+			ctx.strokeStyle = "white";
+			ctx.arc(this.body.position.x, this.body.position.y, this.body.circleRadius, 0, Math.PI * 2);
+			ctx.fill();
+			ctx.stroke();
+		}
 	});
 
 	return Player;
