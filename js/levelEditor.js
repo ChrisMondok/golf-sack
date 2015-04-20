@@ -1,11 +1,14 @@
 require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js', 'js/Wall.js'], function(Level, Ball, Player, Floor, Sand, Water, Enemy, NavigationPoint, Wall) {
-	function LevelEditor() {
+	function LevelEditor(container, width, height) {
+		this.width = width;
+		this.height = height;
+
 		Level.apply(this, arguments); //this sucks.
 		
 		this.state = {
 			drawing: false,
 			brush: null
-		}
+		};
 		
 		this.points = [];
 		
@@ -193,7 +196,17 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		
 	});
 
-	var level = new LevelEditor(document.getElementById("gameArea"));
+	var paramForm = document.getElementById("parameters");
+	paramForm.addEventListener('submit', function(submitEvent) {
+		submitEvent.preventDefault();
+
+		var width = Number(document.getElementById("width").value);
+		var height = Number(document.getElementById("height").value);
+
+		paramForm.parentElement.removeChild(paramForm);
+
+		var level = new LevelEditor(document.getElementById("gameArea"), width, height);
+	});
 	
 	return LevelEditor;
 });
