@@ -75,6 +75,7 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			if(this.level.getActorsOfType(Water).some(function(water) {
 				return Matter.Vertices.contains(water.vertices, this.body.position);
 			}, this)) {
+				this.level.playSound("sploosh");
 				this.mulligan();
 				return;
 			}
