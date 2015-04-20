@@ -85,7 +85,7 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			if(this.level.getActorsOfType(Water).some(function(water) {
 				return Matter.Vertices.contains(water.vertices, this.body.position);
 			}, this)) {
-				this.level.playSound("sploosh");
+				this.level.playSoundAtPoint("sploosh", this.body.position);
 				this.mulligan();
 				return;
 			}
@@ -204,6 +204,9 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			var frequency = (9600 + Math.log10(this.body.frictionAir) * 3200).clamp(0, 9600);
 			this.frictionFilter.frequency.value = frequency;
 
+			this.panner.setPosition(this.body.position.x, this.body.position.y, 0);
+			this.panner.setVelocity(this.body.velocity.x, this.body.velocity.y, 0);
+
 			var gain = (this.body.frictionAir * (Math.pow(this.body.speed, 1.25) / 30)).clamp(0, 1);
 			this.speedGain.gain.value = gain;
 		};
@@ -220,9 +223,15 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			this.speedGain = audioContext.createGain();
 			this.speedGain.gain.value = 0;
 
+			this.panner = audioContext.createPanner();
+			this.panner.setOrientation(0, 0, 1);
+			this.panner.refDistance = 100;
+			this.panner.maxDistance = 10000000;
+
 			this.noise.connect(this.frictionFilter);
 			this.frictionFilter.connect(this.speedGain);
-			this.speedGain.connect(audioContext.destination);
+			this.speedGain.connect(this.panner);
+			this.panner.connect(audioContext.destination);
 		};
 
 		Ball.prototype.destroy = function() {

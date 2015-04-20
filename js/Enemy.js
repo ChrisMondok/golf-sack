@@ -69,7 +69,7 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 
 		Enemy.prototype.speak = function() {
 			if(this.state == Enemy.STATE_HUNTING || this.state == Enemy.STATE_CHASING) {
-				this.level.playSound(["groan1", "groan2", "groan3", "groan4", "groan5"].randomize()[0]);
+				this.level.playSoundAtPoint(["groan1", "groan2", "groan3", "groan4", "groan5"].randomize()[0], this.position);
 				this.speechCooldown = (Math.random() + 0.5)*Enemy.prototype.speechCooldown;
 			}
 		};
@@ -139,6 +139,8 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			this.speechCooldown -= tickEvent.dt;
 			if(this.speechCooldown < 0)
 				this.speak();
+
+			this.killPlayers();
 		}
 
 		function tickChasing(tickEvent) {
@@ -160,6 +162,8 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			this.speechCooldown -= tickEvent.dt;
 			if(this.speechCooldown < 0)
 				this.speak();
+
+			this.killPlayers();
 		}
 
 		Enemy.prototype.acquireTarget = function() {
@@ -198,6 +202,14 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 			var toTarget = Matter.Vector.sub(this.target.position || this.target.body.position, this.position);
 			this.direction = Matter.Vector.angle({x:0, y:0}, toTarget);
 			this.position = Matter.Vector.add(this.position, Matter.Vector.mult(Matter.Vector.normalise(toTarget), this.speed * tickEvent.dt));
+		};
+
+		Enemy.prototype.killPlayers = function() {
+			this.level.getActorsOfType(Player).filter(function(player) {
+				return this.getDistanceTo(player) < this.radius + player.body.circleRadius;
+			}, this).forEach(function(player) {
+				player.kill();
+			});
 		};
 		
 		Enemy.prototype.draw = function(render) {

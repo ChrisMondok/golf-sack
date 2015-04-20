@@ -92,15 +92,41 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 	};
 
 	Level.prototype.playSound = function(soundName) {
-		if(this.sounds) {
-			var source = waveSourceFactory(this.audioContext, this.sounds[soundName]);
-			source.connect(this.audioContext.destination);
-			source.start(0);
+		if(!this.sounds)
+			return;
 
-			setTimeout(function() {
-				source.disconnect();
-			}, 1000 * source.buffer.length / source.buffer.sampleRate);
-		}
+		var source = waveSourceFactory(this.audioContext, this.sounds[soundName]);
+		source.connect(this.audioContext.destination);
+		source.start(0);
+
+		setTimeout(function() {
+			source.disconnect();
+		}, 1000 * source.buffer.length / source.buffer.sampleRate);
+	};
+
+	Level.prototype.playSoundAtPoint = function(soundName, point) {
+		if(!this.sounds)
+			return;
+
+		var source = waveSourceFactory(this.audioContext, this.sounds[soundName]);
+
+		var panner = this.audioContext.createPanner();
+		panner.setOrientation(0, 0, 1);
+		panner.setPosition(point.x, point.y, 0);
+		panner.refDistance = 100;
+		panner.maxDistance = 10000000;
+
+		source.connect(panner);
+		panner.connect(this.audioContext.destination);
+
+		source.start(0);
+
+		setTimeout(function() {
+			source.disconnect();
+			panner.disconnect();
+		}, 1000 * source.buffer.length / source.buffer.sampleRate);
+
+		return panner;
 	};
 
 	Level.prototype.drawBackground = function(render) { };
@@ -123,6 +149,10 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 
 	Level.prototype.tick = function() {
 		this.adjustViewport();
+
+		if(this.audioContext) {
+			this.audioContext.listener.setPosition(this.engine.render.center.x, this.engine.render.center.y, 1);
+		}
 	};
 
 	Level.prototype.adjustViewport = function() {
@@ -153,9 +183,6 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 			this.dispatchMouseMove(position);
 			this.mm = position;
 		}
-
-		if(e.type == 'click')
-			console.log('{x: %d, y: %d}', position.x, position.y);
 
 		if(Matter.Bounds.contains(this.engine.world.bounds, position))
 			e.preventDefault();
