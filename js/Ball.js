@@ -1,5 +1,5 @@
-define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/Water.js', 'js/geometry.js', 'js/noiseSourceFactory.js', 'js/playerInput.js'],
-	function(Actor, AimingCircle, Enemy, Floor, Water, geometry, noiseSourceFactory, playerInput) {
+define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/Water.js', 'js/BloodFountain.js', 'js/geometry.js', 'js/noiseSourceFactory.js', 'js/playerInput.js'],
+	function(Actor, AimingCircle, Enemy, Floor, Water, BloodFountain, geometry, noiseSourceFactory, playerInput) {
 
 	var getImageDataIsFuxored = false;
 
@@ -188,8 +188,11 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 				var b = this.body.position;
 				var r = enemy.radius + this.body.circleRadius;
 
-				if(geometry.lineSegmentCircleIntersection(a, b, enemy.position, r))
+				if(!enemy.isDead() && geometry.lineSegmentCircleIntersection(a, b, enemy.position, r)) {
 					enemy.kill();
+					var direction = Matter.Vector.angle({x: 0, y: 0}, this.body.velocity);
+					new BloodFountain(this.level, enemy.position, direction);
+				}
 
 			}, this);
 		};

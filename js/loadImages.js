@@ -7,7 +7,8 @@ define(['js/output.js'], function(output) {
 			sand: "images/sand.png",
 			zombie1: "images/zombie1.png",
 			zombie2: "images/zombie2.png",
-			player: "images/player.png"
+			player: "images/player.png",
+			blood: "images/blood.png"
 		};
 
 		var images = {};
