@@ -13,6 +13,17 @@ function(Pawn, Player, Ball, NavigationPoint, Water) {
 		
 		this.radius = 10;
 		
+		this.vertices = generateCircleVertices(this.radius, this.position);
+		
+		function generateCircleVertices(r, pos, num) {
+			var n = num || 16;
+			var vertices = [];
+			for(var i=0; i<n; i++)
+				vertices.push(Matter.Vector.add(pos, Matter.Vector.rotate({x:r, y:0},Math.PI * 2 * i / n)));
+			return vertices;
+		}
+			
+		
 		this.target;
 		
 		level.fg.push(this);

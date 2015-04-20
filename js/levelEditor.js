@@ -47,18 +47,17 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				if(this.state.drawing){
 					this.points.push(this.snapPosition(position));
 					if(this.state.brush == "player"){
-						var p = new Player(this, position).tick = function(){};
+						var p = new Player(this, position);
 						p.tick = function(){};
 						this.placedObjects.push(p);
 						this.stopDrawing();
 					} else if(this.state.brush == "ball"){
-						var b = new Ball(this, position).tick = function(){};
+						var b = new Ball(this, position);
 						b.tick = function(){};
 						this.placedObjects.push(b);
-						console.log("stopping draw");
 						this.stopDrawing();
 					} else if(this.state.brush == "enemy"){
-						var e = new Enemy(this, position).tick = function(){};
+						var e = new Enemy(this, position);
 						e.tick = function(){};
 						this.placedObjects.push(e);
 						this.stopDrawing();
@@ -75,8 +74,10 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		};
 		
 		LevelEditor.prototype.erase = function(position) {
-			for(var i=this.placedObjects.length-1; i>=0; i--){
-				if(Matter.Vertices.contains(this.placedObjects[i].vertices, position)){
+			this.placedObjects.reverse();
+			for(var i=0; i<this.placedObjects.length; i++){
+				var v = this.placedObjects[i].vertices || this.placedObjects[i].body.vertices || [{x:0,y:0}];
+				if(Matter.Vertices.contains(v, position)){
 					console.log(this.placedObjects[i]);
 					var obj = this.placedObjects[i];
 					if(obj.destroy)
@@ -85,6 +86,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 					break;
 				}
 			}
+			this.placedObjects.reverse();
 		}
 					
 
