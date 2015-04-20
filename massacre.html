@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Zolf</title>
+		<script src="lib/matter-0.8.0.min.js"></script>
+		<script src="lib/es6-promise-2.0.1.min.js"></script>
+		<script src="lib/require.js"></script>
+		<script src="lib/extensions.js"></script>
+		<script src="lib/sugar.min.js"></script>
+	</head>
+	<body>
+		<div id="gameArea">
+		</div>
+		<p><a href="index.html">Back</a></p>
+
+		<script>
+require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Fairway.js', 'js/Sand.js', 'js/Water.js', 'js/Enemy.js', 'js/NavigationPoint.js', 'js/Wall.js', 'js/Hole.js'],
+		function(Level, Ball, Player, Floor, Fairway, Sand, Water, Enemy, NavigationPoint, Wall, Hole) {
+			function LevelNameHere() {
+				Level.apply(this, arguments);
+			}
+
+			LevelNameHere.inherits(Level, function(base) {
+
+
+				LevelNameHere.prototype.init = function() {
+					this.name = "MASSACRE";
+
+					/************************
+					 * paste yer level here *
+					 ************************/
+					 this.width = 800; this.height = 600;
+
+base.init.apply(this, arguments);
+
+new Fairway(this, [{"x":4,"y":6.1875},{"x":7,"y":595.1875},{"x":795,"y":597.1875},{"x":797,"y":9.1875}]);
+new Wall(this, [{"x":664,"y":459.1875},{"x":659,"y":162.1875}]);
+new Hole(this, {x:746,y:304.1875});
+new Enemy(this, {x:129,y:564.1875});
+new Enemy(this, {x:327,y:500.1875});
+new Enemy(this, {x:263,y:539.1875});
+new Enemy(this, {x:467,y:403.1875});
+new Enemy(this, {x:414,y:328.1875});
+new Enemy(this, {x:447,y:205.1875});
+new Enemy(this, {x:361,y:404.1875});
+new Enemy(this, {x:399,y:243.1875});
+new Enemy(this, {x:350,y:109.1875});
+new Enemy(this, {x:387,y:179.1875});
+new Enemy(this, {x:289,y:158.1875});
+new Enemy(this, {x:214,y:70.1875});
+new Enemy(this, {x:100,y:148.1875});
+new Enemy(this, {x:265,y:210.1875});
+new Player(this, {x:149,y:387.1875});
+new Ball(this, {x:199,y:424.1875});
+new Ball(this, {x:144,y:450.1875});
+new Ball(this, {x:203,y:358.1875});
+new Ball(this, {x:117,y:402.1875});
+new Ball(this, {x:133,y:325.1875});
+new Ball(this, {x:165,y:358.1875});
+new Ball(this, {x:94,y:361.1875});
+new Ball(this, {x:184,y:400.1875});
+new Ball(this, {x:105,y:434.1875});
+new Ball(this, {x:89,y:394.1875});
+new Ball(this, {x:177,y:439.1875});
+new Ball(this, {x:214,y:390.1875});
+new Ball(this, {x:179,y:337.1875});
+				};
+
+				LevelNameHere.prototype.initAudio = function() {
+					this.bgm = "bgm4";
+
+					base.initAudio.apply(this, arguments);
+				};
+			});
+
+			var level = new LevelNameHere(document.getElementById("gameArea"));
+
+			return LevelNameHere;
+		});
+		</script>
+	</body>
+</html>
