@@ -5,6 +5,9 @@ define([], function() {
 		create: function(config) {
 			
 			var defaults = {
+				width: 800,
+				height: 600,
+				viewport: {x: 0, y: 0},
 				options: {},
 				images: {}
 			};
@@ -13,7 +16,7 @@ define([], function() {
 
 			render.frame = 0;
 			render.controller = Rendererer;
-			render.canvas = createCanvas(800,600);
+			render.canvas = createCanvas(render.width, render.height);
 			render.context = render.canvas.getContext("2d");
 
 			render.patterns = {};
@@ -42,12 +45,12 @@ define([], function() {
 			var ctx = render.context;
 			var bodies = world.bodies;
 			
-			ctx.globalCompositeOperation = 'source-in';
-			ctx.fillStyle = "transparent";
-			ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-			ctx.globalCompositeOperation = 'source-over';
-			
-			
+
+			ctx.save();
+			ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+			ctx.translate(-render.viewport.x, -render.viewport.y);
+
 			for(var a=0; a<render.level.actors.length; a++)
 				if(render.level.actors[a].drawBackground)
 					render.level.actors[a].drawBackground(render);
@@ -59,6 +62,8 @@ define([], function() {
 			
 			for(var a=0; a<render.level.actors.length; a++)
 				render.level.actors[a].draw(render);
+
+			ctx.restore();
 
 			if(render.options.debug) {
 				updateDebugGraph(render);
