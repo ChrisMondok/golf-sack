@@ -16,7 +16,8 @@ define(['js/output.js'], function(output) {
 			groan2: "audio/groan2.ogg",
 			groan3: "audio/groan3.ogg",
 			groan4: "audio/groan4.ogg",
-			groan5: "audio/groan5.ogg"
+			groan5: "audio/groan5.ogg",
+			shuffle: "audio/shuffle.ogg"
 		};
 
 		var sounds = {};
