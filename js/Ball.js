@@ -259,6 +259,7 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 		
 		Ball.prototype.sink = function(hole) {
 			this.destroy();
+			this.level.win();
 		}
 	});
 	

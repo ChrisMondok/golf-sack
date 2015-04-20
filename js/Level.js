@@ -1,5 +1,5 @@
-define(['js/Player.js', 'js/Hud.js', 'js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js', 'js/loadSounds.js', 'js/output.js'],
-function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, output) {
+define(['js/Player.js', 'js/Hud.js', 'js/rendererer.js', 'js/waveSourceFactory.js', 'js/loadImages.js', 'js/loadSounds.js', 'js/output.js', 'js/GameEndHud.js'],
+function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, output, GameEndHud) {
 	var Engine = Matter.Engine,
 	World = Matter.World,
 	Bodies = Matter.Bodies;
@@ -229,6 +229,10 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 			}
 		}
 	};
+	
+	Level.prototype.win = function() {
+		new GameEndHud(this, "You won! Your score was " + this.score);
+	}
 
 	return Level;
 });
