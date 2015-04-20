@@ -5,8 +5,8 @@ define([], function() {
 		create: function(config) {
 			
 			var defaults = {
-				width: 800,
-				height: 600,
+				width: 1300,
+				height: 700,
 				playerMargin: 100,
 				center: {x: 400, y: 300},
 				options: {},
