@@ -213,7 +213,8 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 		};
 		
 		LevelEditor.prototype.exp = function() {
-			var output = "";
+			var output = "this.width = "+this.width+"; this.height = "+this.height+";\n\n";
+			output += "base.init.apply(this, arguments);\n";
 			var navPoints = [];
 			this.placedObjects.forEach(function(obj){
 				if(obj instanceof Water) {
