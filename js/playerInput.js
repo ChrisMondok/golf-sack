@@ -19,16 +19,21 @@ define([], function() {
 		"38": "up",
 		"37": "left",
 		"40": "down",
-		"39": "right"
+		"39": "right",
+
+		"77": "mulligan"
 	};
 
 	return {
 		getNormalizedMovement: function() {
-
 			return Matter.Vector.normalise({
 				x: -1 * held.left + 1 * held.right,
 				y: -1 * held.up + 1 * held.down
 			});
+		},
+
+		getWantsToMulligan: function() {
+			return held.mulligan;
 		}
 	};
 

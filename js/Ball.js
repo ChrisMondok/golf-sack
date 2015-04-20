@@ -1,5 +1,5 @@
-define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/Water.js', 'js/geometry.js', 'js/noiseSourceFactory.js'],
-	function(Actor, AimingCircle, Enemy, Floor, Water, geometry, noiseSourceFactory) {
+define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/Water.js', 'js/geometry.js', 'js/noiseSourceFactory.js', 'js/playerInput.js'],
+	function(Actor, AimingCircle, Enemy, Floor, Water, geometry, noiseSourceFactory, playerInput) {
 	function Ball(level, position) {
 		Actor.apply(this, [level]);	
 
@@ -68,10 +68,17 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			if(this.hasSound)
 				this.tickSound();
 
+			if(playerInput.getWantsToMulligan()) {
+				this.mulligan();
+				return;
+			}
+
 			if(this.level.getActorsOfType(Water).some(function(water) {
 				return Matter.Vertices.contains(water.vertices, this.body.position);
-			}, this))
+			}, this)) {
 				this.mulligan();
+				return;
+			}
 
 		};
 
