@@ -118,7 +118,6 @@ define([], function() {
 		var canvas = document.createElement("canvas");
 		canvas.width = width;
 		canvas.height = height;
-		console.log(canvas.style);
 		canvas.style.borderStyle = border.style;
 		canvas.style.borderWidth = border.width;
 		canvas.style.borderColor = border.color;
