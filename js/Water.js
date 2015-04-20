@@ -32,18 +32,19 @@ define(['js/Floor.js', 'js/geometry.js'], function(Floor, geometry) {
 				ctx.beginPath();
 				ctx.polygon(this.vertices);
 
-				ctx.fillStyle = render.patterns.water;
 				ctx.clip();
 
 				var offsetPercent = (render.timestamp % 6000)/6000;
 				var offsetPX = offsetPercent * render.images.water.width;
 
 				ctx.save();
+					ctx.fillStyle = render.patterns.waterLight;
 					ctx.translate(offsetPX, 0);
 					ctx.fillRect(-offsetPX, 0, this.level.engine.world.bounds.max.x + offsetPX, this.level.engine.world.bounds.max.y);
 				ctx.restore();
 
 				ctx.save();
+					ctx.fillStyle = render.patterns.waterDark;
 					ctx.translate(0, offsetPX);
 					ctx.fillRect(0, -offsetPX, this.level.engine.world.bounds.max.x, this.level.engine.world.bounds.max.y + offsetPX);
 				ctx.restore();
