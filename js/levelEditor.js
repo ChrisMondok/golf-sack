@@ -237,7 +237,7 @@ require(['js/Level.js', 'js/Ball.js', 'js/Player.js', 'js/Floor.js', 'js/Sand.js
 				}
 			});
 			if(navPoints.length){
-				output = output + "\n" + JSON.stringify(navPoints) + ".forEach(function(nav){new Navpoint(this, nav)},this);";
+				output = output + "\n" + JSON.stringify(navPoints) + ".forEach(function(nav){new NavigationPoint(this, nav)},this);";
 			}
 			
 			console.log(output);
