@@ -2,7 +2,10 @@ define(['js/output.js'], function(output) {
 	return function() {
 		var imageUrls = {
 			water: "images/water.png",
-			sand: "images/sand.png"
+			sand: "images/sand.png",
+			zombie1: "images/zombie1.png",
+			zombie2: "images/zombie2.png",
+			player: "images/player.png"
 		};
 
 		var images = {};

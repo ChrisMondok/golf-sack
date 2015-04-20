@@ -8,8 +8,8 @@ define(['js/Floor.js'], function(Floor) {
 
 		Sand.prototype.friction = 0.1;
 
-		Sand.prototype.draw = function(render) {
-			base.draw.apply(this, arguments);
+		Sand.prototype.drawBackground = function(render) {
+			base.drawBackground.apply(this, arguments);
 
 			var ctx = render.context;
 
