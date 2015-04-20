@@ -10,7 +10,7 @@ define(['js/Actor'], function(Actor) {
 		
 		GameEndHud.prototype.fontSize = 32;
 		GameEndHud.prototype.margin = 32;
-		GameEndHud.prototype.draw = function(render) {
+		GameEndHud.prototype.drawHud = function(render) {
 			
 			var ctx = render.context;
 			
