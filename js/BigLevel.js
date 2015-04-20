@@ -1,5 +1,5 @@
-require(['js/Level.js', 'js/NavigationPoint.js', 'js/Player.js', 'js/Ball.js', 'js/Floor.js', 'js/Sand.js'], 
-function(Level, NavigationPoint, Player, Ball, Floor, Sand) {
+require(['js/Level.js', 'js/NavigationPoint.js', 'js/Player.js', 'js/Ball.js', 'js/Floor.js', 'js/Sand.js', 'js/Enemy.js'], 
+function(Level, NavigationPoint, Player, Ball, Floor, Sand, Enemy) {
 
 	function BigLevel() {
 		Level.apply(this, arguments);
@@ -17,6 +17,10 @@ function(Level, NavigationPoint, Player, Ball, Floor, Sand) {
 
 			for(var i = 0; i < 50; i++) {
 				new NavigationPoint(this, {x: Math.random() * this.width, y: Math.random() * this.height});
+			}
+
+			for(var i = 0; i < 10; i++) {
+				new Enemy(this, {x: Math.random() * this.width, y: Math.random() * this.height});
 			}
 
 			this.player = new Player(this, {x: 600, y: 400});
