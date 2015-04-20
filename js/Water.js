@@ -35,15 +35,6 @@ define(['js/Floor.js', 'js/geometry.js'], function(Floor, geometry) {
 				ctx.fillStyle = render.patterns.water;
 				ctx.clip();
 
-				ctx.strokeStyle = "rgba(0, 0, 0, 0.3)";
-				for(var i = 4; i; i--) {
-					ctx.lineWidth = i*2;
-					ctx.beginPath();
-					ctx.polygon(this.vertices);
-					ctx.closePath();
-					ctx.stroke();
-				}
-
 				var offsetPercent = (render.timestamp % 6000)/6000;
 				var offsetPX = offsetPercent * render.images.water.width;
 
