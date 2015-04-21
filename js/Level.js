@@ -50,7 +50,7 @@ function(Player, Hud, rendererer, waveSourceFactory, loadImages, loadSounds, out
 				level: this,
 				images: images,
 				options: {
-					debug: true
+					debug: false
 				}
 			}
 		});
