@@ -130,11 +130,11 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 		};
 
 		Ball.prototype.adjustFriction = function() {
-			var baseFriction = this.body.speed > this.SLOW_DOWN_UNDER_THIS_SPEED ? 0 : 0.5;
+			var baseFriction = this.body.speed > this.SLOW_DOWN_UNDER_THIS_SPEED ? 0.01 : 0.5;
 
 			var groundFriction = this.level.getActorsOfType(Floor).filter(function(floor) {
 				return Matter.Vertices.reallyContains(floor.vertices, this.body.position);
-			}, this).map('friction').max() || 0;
+			}, this).map('friction').max() || 0.01;
 
 			this.body.frictionAir = Math.max(baseFriction, groundFriction);
 		};
