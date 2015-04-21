@@ -32,7 +32,9 @@ define(['js/Actor.js', 'js/Ball.js', 'js/playerInput.js'], function(Actor, Ball,
 		Player.prototype.onCollisionStart = function(collisionEvent) {
 			var balls = this.level.getActorsOfType(Ball);
 
-			collisionEvent.pairs.forEach(function(pair) {
+			collisionEvent.pairs.filter(function(pair) {
+				return pair.bodyA == this.body || pair.bodyB == this.body;
+			}, this).forEach(function(pair) {
 				if(balls.some(function(ball) {
 					return ball.body == pair.bodyA || ball.body == pair.bodyB;
 				}))

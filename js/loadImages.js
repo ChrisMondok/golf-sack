@@ -5,6 +5,7 @@ define(['js/output.js'], function(output) {
 			waterLight: "images/waterLight.png",
 			waterDark: "images/waterDark.png",
 			sand: "images/sand.png",
+			grass: "images/grass.png",
 			zombie1: "images/zombie1.png",
 			zombie2: "images/zombie2.png",
 			player: "images/player.png",
