@@ -208,7 +208,6 @@ define(['js/Actor.js', 'js/AimingCircle.js', 'js/Enemy.js', 'js/Floor.js', 'js/W
 			this.frictionFilter.frequency.value = frequency;
 
 			this.panner.setPosition(this.body.position.x, this.body.position.y, 0);
-			this.panner.setVelocity(this.body.velocity.x, this.body.velocity.y, 0);
 
 			var gain = (this.body.frictionAir * (Math.pow(this.body.speed, 1.25) / 30)).clamp(0, 1);
 			this.speedGain.gain.value = gain;
